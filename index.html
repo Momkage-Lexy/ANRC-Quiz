@@ -12,6 +12,7 @@
 </head>
 <body>
 
+
     <!-- Main container -->
     <div class="form-container">
         <div class="form-inner">
@@ -19,12 +20,15 @@
                 <form id="questionForm">
                     <div class="question-label" id="questionLabel"></div>
                     <div id="radioContainer" class="radio-group"></div>
+                    <button type="button" id="backButton" class="button hidden">Back</button>
                     <button class="button" id="submitButton" type="submit">Submit</button>
                 </form>
             </div>
         </div>
     </div>
 
+
+    <!-- Career Results Container -->
     <div class="career-container hidden">
         <div class="career-inner">
             <h1>Agricultural & Natural Resources Communication</h1>
@@ -37,6 +41,8 @@
         </div>
     </div>
 
+
+    <!-- Wrap Up Text Container -->
     <div class="wrapup-container hidden">
         <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
 
@@ -49,6 +55,8 @@
         </form>
     </div>
     <script>
+        const historyStack = [];
+        let resultsShown = false;
         let currentPath = null;
         let selectedPath = null;
 
@@ -432,6 +440,13 @@
             const selected = document.querySelector('input[name="answer"]:checked');
             if(!selected) return;
 
+            // Save current state
+            historyStack.push({
+                currentPath,
+                currentIndex,
+                selectedPath
+            });
+
             // Get Path from Q1 response
             const answer = selected.value;
 
@@ -443,6 +458,10 @@
                 currentPath = paths[answer];
                 // Reset index
                 currentIndex = 0;
+                
+                // Display back button
+                document.getElementById("backButton").classList.remove("hidden");
+
                 // Render path questions
                 renderQuestion(currentPath[currentIndex]);
                 return;
@@ -456,9 +475,12 @@
                 renderQuestion(currentPath[currentIndex]);
             } else {
                 // End of path
+                resultsShown = true;
+
                 document.getElementById("questionLabel").classList.add("hidden");
                 document.getElementById("radioContainer").classList.add("hidden");
                 document.getElementById("submitButton").classList.add("hidden");
+                document.getElementById("backButton").classList.add("hidden");
 
                 renderCareerResults(selectedPath);
             }
@@ -470,16 +492,42 @@
             currentPath = null;
             currentIndex = 0;
             selectedPath = null;
+            historyStack.length = 0;
+            resultsShown = false;
 
             // Hide results
             document.querySelector(".career-container").classList.add("hidden");
             document.querySelector(".wrapup-container").classList.add("hidden");
+            document.getElementById("backButton").classList.add("hidden");
 
             renderQuestion(Question1[0]);
             // Display Quiz from the beginning
             document.getElementById("questionLabel").classList.remove("hidden");
             document.getElementById("radioContainer").classList.remove("hidden");
             document.getElementById("submitButton").classList.remove("hidden");
+        })
+
+        
+        // Back
+        document.getElementById("backButton").addEventListener("click", () => {
+            // Disable at the first question or during results
+            if (historyStack.length === 0 || resultsShown) return;
+
+            // Previous question in the stack
+            const previous = historyStack.pop();
+
+            currentPath = previous.currentPath;
+            currentIndex = previous.currentIndex;
+            selectedPath = previous.selectedPath;
+
+            // Return to first question if on the first path question
+            if (!currentPath) {
+                renderQuestion(Question1[0]);
+                document.getElementById("backButton").classList.add("hidden");
+                return;
+            }
+
+            renderQuestion(currentPath[currentIndex]);
         })
     </script>
 </body>
