@@ -43,6 +43,10 @@
         <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
 
         <p>Wherever you see yourself making a difference, there’s a place for your voice here. If you’re ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
+
+        <form id="restart">
+            <button class="button" id="restartButton" type="button">Restart Quiz</button>
+        </form>
     </div>
     <script>
         let currentPath = null;
@@ -419,6 +423,7 @@
             document.querySelector(".wrapup-container").classList.remove("hidden");
         }
 
+
         // Question Flow
         document.getElementById("questionForm").addEventListener("submit", (e) => {
             e.preventDefault();
@@ -451,11 +456,30 @@
                 renderQuestion(currentPath[currentIndex]);
             } else {
                 // End of path
-                document.getElementById("questionLabel").textContent = "";
-                document.getElementById("radioContainer").innerHTML = "";
+                document.getElementById("questionLabel").classList.add("hidden");
+                document.getElementById("radioContainer").classList.add("hidden");
+                document.getElementById("submitButton").classList.add("hidden");
 
                 renderCareerResults(selectedPath);
             }
         });
+    
+    
+        // Reset
+        document.getElementById("restartButton").addEventListener("click", () => {
+            currentPath = null;
+            currentIndex = 0;
+            selectedPath = null;
+
+            // Hide results
+            document.querySelector(".career-container").classList.add("hidden");
+            document.querySelector(".wrapup-container").classList.add("hidden");
+
+            renderQuestion(Question1[0]);
+            // Display Quiz from the beginning
+            document.getElementById("questionLabel").classList.remove("hidden");
+            document.getElementById("radioContainer").classList.remove("hidden");
+            document.getElementById("submitButton").classList.remove("hidden");
+        })
     </script>
 </body>
