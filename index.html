@@ -20,8 +20,7 @@
                 <form id="questionForm">
                     <div class="question-label" id="questionLabel"></div>
                     <div id="radioContainer" class="radio-group"></div>
-                    <button type="button" id="backButton" class="button hidden">Back</button>
-                    <button class="button" id="submitButton" type="submit">Submit</button>
+                    <button type="button" id="backButton" class="button hidden">Back</button>  
                 </form>
             </div>
         </div>
@@ -396,18 +395,21 @@
             question.options.forEach((option, index) => {
                 const id = `option-${index}`;
 
-                radioContainer.innerHTML += `
-                    <label for="${id}">
-                        <input 
-                            type="radio" 
-                            name="answer" 
-                            id="${id}" 
-                            value="${option.key}" 
-                            required
-                        >
-                        ${option.label}
-                    </label>
-                `;
+                const label = document.createElement("label");
+                label.setAttribute("for", id);
+                label.textContent = option.label;
+                
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "answer";
+                input.id = id;
+                input.value = option.key;
+
+                input.addEventListener("change", () => handleAnswer(option.key));
+
+                label.prepend(input);
+                radioContainer.appendChild(label)
+
             });
         }
 
@@ -433,22 +435,13 @@
 
 
         // Question Flow
-        document.getElementById("questionForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            // Validate input
-            const selected = document.querySelector('input[name="answer"]:checked');
-            if(!selected) return;
-
+        function handleAnswer(answer){
             // Save current state
             historyStack.push({
                 currentPath,
                 currentIndex,
                 selectedPath
             });
-
-            // Get Path from Q1 response
-            const answer = selected.value;
 
             // Branching
             if(!currentPath) { 
@@ -479,13 +472,12 @@
 
                 document.getElementById("questionLabel").classList.add("hidden");
                 document.getElementById("radioContainer").classList.add("hidden");
-                document.getElementById("submitButton").classList.add("hidden");
                 document.getElementById("backButton").classList.add("hidden");
 
                 renderCareerResults(selectedPath);
             }
-        });
-    
+        }
+
     
         // Reset
         document.getElementById("restartButton").addEventListener("click", () => {
@@ -504,10 +496,9 @@
             // Display Quiz from the beginning
             document.getElementById("questionLabel").classList.remove("hidden");
             document.getElementById("radioContainer").classList.remove("hidden");
-            document.getElementById("submitButton").classList.remove("hidden");
         })
 
-        
+
         // Back
         document.getElementById("backButton").addEventListener("click", () => {
             // Disable at the first question or during results
