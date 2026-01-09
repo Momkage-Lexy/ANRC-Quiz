@@ -29,10 +29,10 @@
         <div class="career-inner">
             <h1>Agricultural & Natural Resources Communication</h1>
             <h2 id="path-title"></h2>
-            <p id="careers-list"></p>
+            <ul id="careers-list"></ul>
             <div class="courses">
                 <h3>Some Agricultural & Natural Resources Communication courses that would help you develop <span id="path"></span> skills at Oregon State are:</h3>
-                <p id="course-list"></p>
+                <ul id="course-list"></ul>
             </div>
         </div>
     </div>
@@ -46,6 +46,8 @@
     </div>
     <script>
         let currentPath = null;
+        let selectedPath = null;
+
         let currentIndex = 0;
 
 
@@ -356,6 +358,18 @@
         ]; 
         
 
+        // Result Keys
+        const careerResults = {
+            visual: visualCommuncation,
+            writing: writing,
+            strategy: strategy,
+            management: management,
+            advocacy: advocacy,
+            education: education,
+            entrepreneurial: entrepreneurial
+        };
+
+
         // Rendering
         function renderQuestion(question) {
             const labelEl = document.getElementById("questionLabel");
@@ -388,6 +402,22 @@
         // Load the first question
         renderQuestion(Question1[0]);
 
+        // Results Render
+        function renderCareerResults(pathKey){
+            const data = careerResults[pathKey][0];
+
+            document.getElementById("path-title").textContent = data.careerGroup;
+            document.getElementById("path").textContent = data.careerGroup;
+
+            document.getElementById("careers-list").innerHTML = 
+                data.careerList.map(career => `<li>${career}</li>`).join("");
+            
+            document.getElementById("course-list").innerHTML = 
+                data.courseList.map(course => `<li>${course}</li>`).join("");
+
+            document.querySelector(".career-container").classList.remove("hidden");
+            document.querySelector(".wrapup-container").classList.remove("hidden");
+        }
 
         // Question Flow
         document.getElementById("questionForm").addEventListener("submit", (e) => {
@@ -402,6 +432,8 @@
 
             // Branching
             if(!currentPath) { 
+                // Store Path
+                selectedPath = answer;
                 // Branch to new path
                 currentPath = paths[answer];
                 // Reset index
@@ -419,9 +451,10 @@
                 renderQuestion(currentPath[currentIndex]);
             } else {
                 // End of path
-                document.getElementById("questionLabel").textContent = 
-                "You've reach the end of this path.";
+                document.getElementById("questionLabel").textContent = "";
                 document.getElementById("radioContainer").innerHTML = "";
+
+                renderCareerResults(selectedPath);
             }
         });
     </script>
