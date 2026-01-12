@@ -8,19 +8,242 @@
         .hidden{
             display: none !important;
         }
+
+        /* FLEX */
+
+        .flex{
+            display: flex !important;
+        }
+
+        .flex-wrap{
+            flex-wrap: wrap !important;
+        }
+
+        .flex-basis-5{
+            flex-basis: 5% !important;
+        }
+
+        .flex-basis-10{
+            flex-basis: 10% !important;
+        }
+
+        .flex-basis-20{
+            flex-basis: 20% !important;
+        }
+
+        .flex-basis-25{
+            flex-basis: 25% !important;
+        }
+
+        .flex-basis-35{
+            flex-basis: 35% !important;
+        }
+
+        .flex-basis-45
+        {
+            flex-basis: 45% !important;
+        }  
+
+        .flex-basis-50{
+            flex-basis: 50% !important;
+        }   
+        
+        .flex-basis-55
+        {
+            flex-basis: 55% !important;
+        }
+
+        .flex-basis-65{
+            flex-basis: 65% !important;
+        }
+
+        .flex-basis-100{
+            flex-basis: 100% !important
+        }
+
+        .flex-column{
+            flex-direction: column !important;
+        }
+
+        .align-center{
+            align-items: center !important;
+        }
+
+        .justify-center{
+            justify-content: center !important;
+        }
+
+        .space-around{
+            justify-content: space-around !important;
+        }
+
+        .align-content-center{
+            align-content: center !important;
+        }
+
+        /* COLORS */
+
+        .bg-till{
+            background-color: #b7a99a !important;
+        }
+
+        .bg-highdesert{
+            background-color: #7a6855 !important;
+        }   
+
+        .bg-offwhite{
+            background-color: #e9e5e4 !important;
+        }
+
+        /* HEIGHTS */
+
+        .height-vh100{
+            height: 100vh !important;
+        }
+
+        .height-100{
+            height: 100% !important;
+        }
+
+        .max-height-40{
+            max-height: 40% !important;
+        }
+
+        .max-height-60{
+            max-height: 60% !important;
+        }
+
+        .height-75{
+            height: 75% !important;
+        }
+
+        .max-height-75{
+            max-height: 75% !important;
+        }   
+
+        .height-300{
+            height:300px !important;
+        }
+
+        .height-400{
+            height:400px !important;
+        }   
+
+        /* WIDTHS */
+
+        .width-25{
+            width:25% !important;
+        }
+
+        .width-50{
+            width: 50% !important;
+        }
+
+        .width-75{
+            width: 75% !important;
+        }
+
+        .width-100{
+            width: 100% !important;
+        }
+
+        .max-width-50{
+            max-width: 50% !important;
+        }
+
+        .max-width-75{
+            max-width: 75% !important;
+        }
+
+        /* TEXT */
+        @font-face {
+            font-family: 'Stratum2Web';
+            src: url('Stratum2-Medium.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Kievit';
+            src: url('KievitOffc-Medi.ttf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        .Stratum2Web{
+            font-family: 'Stratum2Web', sans-serif !important;
+        }
+
+        .Kievit{
+            font-family: 'Kievit', sans-serif !important;
+        }
+
+        .text-center{
+            text-align: center !important;
+        }
+
+        .fs-3{
+            font-size: 3rem !important;
+        }
+
+        /* IMAGE */
+        /* MARGIN */
+
+        .m-0{
+            margin: 0px !important;
+        }
+
+        .mt-10{
+            margin-top: 10px !important;
+        }
+
+        /* PADDING */
+        .p-0{
+            padding: 0px !important;
+        }
+
+        .p-10{
+            padding: 10px !important;
+        }
+
+        .p-20{
+            padding: 20px !important;
+        }
+
+        /* GAPS */
+        .g-10{
+            gap: 10px !important;
+        }
+
+        .g-20{
+            gap: 20px !important;
+        }
+
+        /* BORDER RADIUS */
+        .br-50{
+            border-radius: 50px !important;
+        }
+
+
+    
+
     </style>
 </head>
-<body>
+<body class="m-0 bg-offwhite">
 
 
     <!-- Main container -->
     <div class="form-container">
         <div class="form-inner">
-            <div id="transitionWrapper" class="transition-wrapper">
-                <form id="questionForm">
-                    <div class="question-label" id="questionLabel"></div>
-                    <div id="radioContainer" class="radio-group"></div>
-                    <button type="button" id="backButton" class="button hidden">Back</button>  
+            <div id="transitionWrapper" class="transition-wrapper row">
+                <form id="questionForm" class="flex height-vh100 align-center">
+                    <div class="flex flex-basis-35 align-center justify-center bg-till height-100">
+                        <div class="question-label Stratum2Web fs-3 text-center space-around p-20" id="questionLabel"></div>
+                    </div>
+                    <div class="flex flex-wrap flex-basis-65 justify-center max-height-40">
+                        <div id="radioContainer" class="radio-group flex flex-wrap flex-basis-100 flex-column g-20 max-width-75 max-height-40 height-300 Kievit"></div>
+                        <div class="flex flex-basis-100 justify-center mt-10"><button type="button" id="backButton" class="button width-25 hidden Kievit">Back</button></div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -394,16 +617,20 @@
 
             question.options.forEach((option, index) => {
                 const id = `option-${index}`;
+                const inputClassList = `hidden`;
+                const labelClassList = `p-20 bg-till text-center br-50 flex-basis-5 align-content-center optionLabel`;
 
                 const label = document.createElement("label");
                 label.setAttribute("for", id);
                 label.textContent = option.label;
+                label.classList = labelClassList;
                 
                 const input = document.createElement("input");
                 input.type = "radio";
                 input.name = "answer";
                 input.id = id;
                 input.value = option.key;
+                input.classList = inputClassList;
 
                 input.addEventListener("change", () => handleAnswer(option.key));
 
@@ -429,6 +656,7 @@
             document.getElementById("course-list").innerHTML = 
                 data.courseList.map(course => `<li>${course}</li>`).join("");
 
+            document.querySelector(".form-container").classList.add("hidden");
             document.querySelector(".career-container").classList.remove("hidden");
             document.querySelector(".wrapup-container").classList.remove("hidden");
         }
@@ -444,6 +672,7 @@
             });
 
             // Branching
+
             if(!currentPath) { 
                 // Store Path
                 selectedPath = answer;
@@ -452,6 +681,10 @@
                 // Reset index
                 currentIndex = 0;
                 
+                document.getElementById("questionForm").classList.remove("flex", "height-vh100");
+                document.getElementById("radioContainer").classList.remove("flex-column", "height-300");
+                document.getElementById("radioContainer").classList.add("justify-center");
+
                 // Display back button
                 document.getElementById("backButton").classList.remove("hidden");
 
@@ -496,6 +729,7 @@
             // Display Quiz from the beginning
             document.getElementById("questionLabel").classList.remove("hidden");
             document.getElementById("radioContainer").classList.remove("hidden");
+            document.querySelector(".form-container").classList.remove("hidden");
         })
 
 
