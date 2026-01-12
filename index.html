@@ -690,6 +690,13 @@
 
                 // Render path questions
                 renderQuestion(currentPath[currentIndex]);
+
+                const optionLabels = document.getElementsByClassName("optionLabel");
+                for (let i = 0; i < optionLabels.length; i++) {
+                    optionLabels[i].classList.remove("flex-basis-5");
+                    optionLabels[i].classList.add("flex-basis-25");
+                }
+    
                 return;
             }
 
@@ -699,13 +706,21 @@
             // Render second path question
             if(currentIndex < currentPath.length) {
                 renderQuestion(currentPath[currentIndex]);
+                
+                const optionLabels = document.getElementsByClassName("optionLabel");
+                for (let i = 0; i < optionLabels.length; i++) {
+                    optionLabels[i].classList.remove("flex-basis-5");
+                    optionLabels[i].classList.add("flex-basis-25");
+                }
             } else {
                 // End of path
                 resultsShown = true;
 
                 document.getElementById("questionLabel").classList.add("hidden");
-                document.getElementById("radioContainer").classList.add("hidden");
+                document.getElementById("radioContainer").classList.add("hidden", "flex-column", "height-300");
                 document.getElementById("backButton").classList.add("hidden");
+                document.getElementById("questionForm").classList.add("flex", "height-vh100");
+                document.getElementById("radioContainer").classList.remove("justify-center");
 
                 renderCareerResults(selectedPath);
             }
