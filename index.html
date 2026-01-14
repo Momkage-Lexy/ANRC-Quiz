@@ -204,6 +204,10 @@
             text-align: center !important;
         }
 
+        .fs-2{
+            font-size: 2rem !important;
+        }
+
         .fs-3{
             font-size: 3rem !important;
         }
@@ -236,6 +240,10 @@
             font-style: italic !important;
         }
 
+        .lh-18{
+            line-height: 1.8 !important;
+        }
+
         /* IMAGE */
         /* MARGIN */
 
@@ -245,6 +253,14 @@
 
         .mt-10{
             margin-top: 10px !important;
+        }
+
+        .ml-5{
+            margin-left: 5% !important;
+        }
+
+        .mr-5{
+            margin-right: 5% !important;
         }
 
         /* PADDING */
@@ -274,8 +290,21 @@
             border-radius: 50px !important;
         }
 
-
-    
+        /* Tag Specific */
+        #course-list li{
+            width: fit-content;
+            background-color: #7a6855;
+            margin-bottom: 2rem;
+            padding: 20px;
+            list-style: none;
+            border-radius: 0 50px 50px 0px;
+            box-shadow: rgba(215, 63, 9, 0.4) 5px 5px, rgba(215, 63, 9, 0.3) 10px 10px, rgba(215, 63, 9, 0.2) 15px 15px, rgba(215, 63, 9, 0.1) 20px 20px, rgba(215, 63, 9, 0.05) 25px 25px;
+            font-family: 'Stratum2Web', sans-serif;
+            color:white;
+            font-weight: 300;
+            font-size: 1.8rem;
+            text-shadow: #444444 1px 1px 2px;
+        }
 
     </style>
 </head>
@@ -309,15 +338,15 @@
             </div>
             <ul id="careers-list"></ul>
             <div class="courses">
-                <h3>Some Agricultural & Natural Resources Communication courses that would help you develop <span id="path"></span> skills at Oregon State are:</h3>
-                <ul id="course-list"></ul>
+                <h3 class="fs-2 text-center Kievit">Some Agricultural & Natural Resources Communication courses that would help you develop <span id="path"></span> skills at Oregon State are:</h3>
+                <ul id="course-list" class="m-0 p-0"></ul>
             </div>
         </div>
     </div>
 
 
     <!-- Wrap Up Text Container -->
-    <div class="wrapup-container hidden">
+    <div class="wrapup-container hidden text-center fs-2 Kievit p-20 ml-5 mr-5 lh-18">
         <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
 
         <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
