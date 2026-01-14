@@ -9,6 +9,10 @@
             display: none !important;
         }
 
+        .block{
+            display: block !important;
+        }
+
         /* FLEX */
 
         .flex{
@@ -158,6 +162,10 @@
             max-width: 75% !important;
         }
 
+        .fit-content{
+            width: fit-content !important;
+        }
+
         /* TEXT */
         @font-face {
             font-family: 'Stratum2Web';
@@ -180,6 +188,10 @@
             font-style: normal;
         }
 
+        .StratumLite{
+            font-family: 'StratumLite', sans-serif !important;
+        }
+
         .Stratum2Web{
             font-family: 'Stratum2Web', sans-serif !important;
         }
@@ -194,6 +206,34 @@
 
         .fs-3{
             font-size: 3rem !important;
+        }
+
+        .fs-4{
+            font-size: 4rem !important;
+        }
+
+        .fs-5{
+            font-size: 5rem !important;
+        }
+
+        .fw-100{
+            font-weight: 100 !important;
+        }
+
+        .fw-200{
+            font-weight: 200 !important;
+        }
+
+        .fw-800{
+            font-weight: 800 !important;
+        }
+
+        .uppercase{
+            text-transform: uppercase !important;
+        }
+
+        .italic{
+            font-style: italic !important;
         }
 
         /* IMAGE */
@@ -263,8 +303,10 @@
     <!-- Career Results Container -->
     <div class="career-container hidden">
         <div class="career-inner">
-            <h1>Agricultural & Natural Resources Communication</h1>
-            <h2><span id="path-title"></span> Careers You’d Thrive In:</h2>
+            <h1 class="StratumLite fw-200">Agricultural & Natural Resources Communication</h1>
+            <div>
+                <h2 class="fit-content"><span id="path-title" class="uppercase fw-800 fs-5 Stratum2Web"></span><br><span class="block text-center italic fs-3">Careers You’d Thrive In:</span></h2>
+            </div>
             <ul id="careers-list"></ul>
             <div class="courses">
                 <h3>Some Agricultural & Natural Resources Communication courses that would help you develop <span id="path"></span> skills at Oregon State are:</h3>
