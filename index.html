@@ -86,13 +86,16 @@
         .bg-till{
             background-color: #b7a99a !important;
         }
-
         .bg-highdesert{
             background-color: #7a6855 !important;
         }   
 
         .bg-offwhite{
             background-color: #e9e5e4 !important;
+        }
+
+        .text-white{
+            color: #e9e5e4 !important;
         }
 
         /* HEIGHTS */
@@ -236,7 +239,7 @@
 
     </style>
 </head>
-<body class="m-0 bg-offwhite">
+<body class="m-0 bg-till">
 
 
     <!-- Main container -->
@@ -244,8 +247,8 @@
         <div class="form-inner">
             <div id="transitionWrapper" class="transition-wrapper row">
                 <form id="questionForm" class="flex height-vh100 align-center">
-                    <div class="flex flex-basis-35 align-center justify-center bg-till height-100">
-                        <div class="question-label Stratum2Web fs-3 text-center space-around p-20" id="questionLabel"></div>
+                    <div class="flex flex-basis-35 align-center justify-center bg-highdesert height-100">
+                        <div class="question-label Stratum2Web fs-3 text-center space-around p-20 text-white" id="questionLabel"></div>
                     </div>
                     <div class="flex flex-wrap flex-basis-65 justify-center max-height-40">
                         <div id="radioContainer" class="radio-group flex flex-wrap flex-basis-100 flex-column g-20 max-width-75 max-height-40 height-300 Kievit"></div>
@@ -625,7 +628,7 @@
             question.options.forEach((option, index) => {
                 const id = `option-${index}`;
                 const inputClassList = `hidden`;
-                const labelClassList = `p-20 bg-till text-center br-50 flex-basis-5 align-content-center optionLabel`;
+                const labelClassList = `p-20 bg-highdesert text-center text-white br-50 flex-basis-5 align-content-center optionLabel`;
 
                 const label = document.createElement("label");
                 label.setAttribute("for", id);
