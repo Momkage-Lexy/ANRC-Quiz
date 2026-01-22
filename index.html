@@ -20,6 +20,8 @@ html, body {
   padding: 0;
   overflow-x: hidden;
   background: #ffeedc26;
+  height: 100%;
+  max-height: 100vh;
 }
 
 /* =====================
@@ -156,10 +158,13 @@ button.nav {
   padding: 0.75rem 2rem;
   border-radius: 999px;
   border: none;
-  background: #7a6855;
+  background: #006A8E;
   color: white;
   font-family: 'Kievit', sans-serif;
   cursor: pointer;
+  width: 200px;
+  margin: auto;
+  margin-top: 0;
 }
 
 .hidden {
@@ -185,6 +190,13 @@ button.nav {
   font-size: clamp(1.8rem, 3vw, 2.8rem);
 }
 
+.results-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+}
 /* =====================
    COURSES
 ===================== */
@@ -197,10 +209,10 @@ button.nav {
 }
 
 .course-list li {
-  background: #7a6855;
-  color: white;
+  color: #d73f09;
   padding: 1.25rem 1.5rem;
   border-radius: 999px;
+  border: 2px solid #d73f09;
   font-family: 'Kievit', sans-serif;
 }
 
@@ -208,10 +220,33 @@ button.nav {
    WRAP UP
 ===================== */
 .wrapup {
-  text-align: center;
-  font-family: 'Kievit', sans-serif;
-  font-size: 1.2rem;
-  line-height: 1.7;
+    text-align: center;
+    font-family: 'Kievit', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #d73f09;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.wrapup-paragraph {
+    margin-bottom: 2rem;
+}
+
+.arrow-button {
+    background: none;
+    border: none;
+    color: #d73f09;
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 2rem;
+    margin-top: 2rem;
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+.arrow-button:hover {
+    transform: translateY(5px);
 }
 /* =====================
    CAREER GRID (PACKED GRID)
@@ -272,7 +307,7 @@ button.nav {
   text-align: center;
 
   font-family: 'Stratum2Web', sans-serif;
-  font-size: 1.3rem;
+  font-size: 2rem;
   padding: 1.5rem;
 
   opacity: 1;
@@ -413,28 +448,30 @@ button.nav {
     <div class="results-shell">
 
         <!-- CAREERS -->
-        <section class="results-section">
+        <section id="careersSection" class="results-section">
             <h2 class="Stratum2Web results-title">
-                Careers You’d Thrive In
+                Careers You'd Thrive In
             </h2>
             <div id="careerGrid" class="career-grid"></div>
+            <button class="arrow-button" id="arrow1">↓</button>
         </section>
 
         <!-- COURSES -->
-        <section class="results-section">
+        <section id="coursesSection" class="results-section hidden">
             <h2 class="Stratum2Web results-title">
                 Courses That Build These Skills
             </h2>
             <ul id="courseList" class="course-list"></ul>
+            <button class="arrow-button" id="arrow2">↓</button>
         </section>
 
         <!-- WRAP UP -->
-        <section class="results-section wrapup">
-            <p>
-                Agriculture and natural resources shape our communities, our environment,
-                and our future. Communication connects people to the land, the science,
-                and the stories behind it.
-            </p>
+        <section id="wrapupSection" class="results-section wrapup hidden">
+            <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
+
+            <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+
+            <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
 
             <button id="restartButton" class="nav">
                 Restart Quiz
@@ -930,6 +967,9 @@ renderQuestion(Question1, "intro");
 /* =====================
    RESULTS
 ===================== */
+/* =====================
+   RESULTS
+===================== */
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
@@ -999,24 +1039,39 @@ function showResults(pathKey) {
 
   document.querySelector(".quiz-shell").classList.add("hidden");
   document.getElementById("results").classList.remove("hidden");
+  
+  // Set up arrow navigation - MUST BE AFTER results are shown
+  document.getElementById("arrow1").onclick = () => {
+    document.getElementById("careersSection").classList.add("hidden");
+    document.getElementById("coursesSection").classList.remove("hidden");
+  };
+
+  document.getElementById("arrow2").onclick = () => {
+    document.getElementById("coursesSection").classList.add("hidden");
+    document.getElementById("wrapupSection").classList.remove("hidden");
+  };
 }
 
 /* =====================
    RESTART
 ===================== */
 document.getElementById("restartButton").onclick = () => {
-  currentPath = null;
-  currentIndex = 0;
-  historyStack.length = 0;
+    currentPath = null;
+    currentIndex = 0;
+    historyStack.length = 0;
 
-  document.getElementById("results").classList.add("hidden");
-  document.querySelector(".quiz-shell").classList.remove("hidden");
+    document.getElementById("results").classList.add("hidden");
+    document.querySelector(".quiz-shell").classList.remove("hidden");
 
-  document.getElementById("backButton").classList.add("hidden");
-  renderQuestion(Question1, "intro");
-  selectedPathKey = null;
+    document.getElementById("backButton").classList.add("hidden");
+    renderQuestion(Question1, "intro");
+    selectedPathKey = null;
+    
+    // Reset sections
+    document.getElementById("careersSection").classList.remove("hidden");
+    document.getElementById("coursesSection").classList.add("hidden");
+    document.getElementById("wrapupSection").classList.add("hidden");
 };
-
 </script>
 
 </body>
