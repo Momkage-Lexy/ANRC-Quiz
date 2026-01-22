@@ -74,11 +74,24 @@ html, body {
   align-items: center;
 }
 
+.first-question{
+    height: 800px;
+    border-right: 1px solid #d73f09;
+    display: flex;
+    align-items: center;
+}
+
 /* PATH QUESTIONS (label top, 3-column answers) */
 .question-layout[data-layout="path"] {
   grid-template-columns: 1fr;
 }
 
+.question-layout[data-layout="path"] .first-question{
+    height: auto;
+    border-right: 1px solid #d7400900;
+    display: block;
+    align-items: center;
+}
 /* MOBILE: all stack */
 @media (max-width: 900px) {
   .question-layout {
@@ -430,7 +443,7 @@ button.nav {
         class="question-layout"
         data-layout="intro"
       >
-        <div class="question-label Stratum2Web" id="questionLabel"></div>
+        <div class="first-question"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
         <div class="answers" id="radioContainer"></div>
       </div>
 
@@ -964,9 +977,6 @@ document.getElementById("backButton").onclick = () => {
 /* INIT */
 renderQuestion(Question1, "intro");
 
-/* =====================
-   RESULTS
-===================== */
 /* =====================
    RESULTS
 ===================== */
