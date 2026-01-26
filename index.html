@@ -48,11 +48,11 @@ html, body {
    SHELL
 ===================== */
 .quiz-shell {
-  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem;
+  height: 50%;
 }
 
 .quiz-card {
@@ -75,7 +75,7 @@ html, body {
 }
 
 .first-question{
-    height: 800px;
+    height: 500px;
     border-right: 1px solid #d73f09;
     display: flex;
     align-items: center;
@@ -190,15 +190,13 @@ button.nav {
 .results-shell {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 4rem;
 }
 
 .results-title {
-  text-align: center;
-  color: #d73f09;
+  text-align: left;
   margin-bottom: 2rem;
   font-size: clamp(1.8rem, 3vw, 2.8rem);
 }
@@ -207,8 +205,6 @@ button.nav {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    padding: 2rem;
 }
 /* =====================
    COURSES
@@ -274,6 +270,7 @@ button.nav {
   margin-left: calc(-50vw + 50%);
   padding: 0 1rem;
   box-sizing: border-box;
+  margin-top: 50px;
 }
 
 @media (max-width: 768px) {
@@ -344,27 +341,28 @@ button.nav {
 ===================== */
 .career-grid.grid-small .career-card:nth-child(1) {
   grid-column: 1 / 4;
-  grid-row: 1 / 4;
-}
-
-.career-grid.grid-small .career-card:nth-child(2) {
-  grid-column: 4 / 7;
   grid-row: 1 / 3;
 }
 
+.career-grid.grid-small .career-card:nth-child(2) {
+  grid-column: 4 / 6;
+  grid-row: 1 / -1;
+}
+
 .career-grid.grid-small .career-card:nth-child(3) {
-  grid-column: 7 / 9;
+    margin-top:-150px;
+  grid-column: 6 / 9;
   grid-row: 1 / 4;
 }
 
 .career-grid.grid-small .career-card:nth-child(4) {
-  grid-column: 4 / 6;
-  grid-row: 3 / 7;
+  grid-column: 6 / 9;
+  grid-row: 4 / 7;
 }
 
 .career-grid.grid-small .career-card:nth-child(5) {
   grid-column: 1 / 4;
-  grid-row: 4 / 7;
+  grid-row: 3 / 7;
 }
 
 .career-grid.grid-small .career-card:nth-child(6) {
@@ -373,26 +371,63 @@ button.nav {
 }
 
 /* =====================
+   CARD LAYOUTS - 6 CARDS
+===================== */
+.career-grid.grid-med .career-card:nth-child(1) {
+  grid-column: 1 / 3;
+  grid-row: 1 / 5;
+}
+
+.career-grid.grid-med .career-card:nth-child(2) {
+  grid-column: 3 / 5;
+  grid-row: 1 / 5;
+}
+
+.career-grid.grid-med .career-card:nth-child(3) {
+  grid-column: 6 / 9;
+  grid-row: 1 / 4;
+  margin-top: -150px;
+}
+
+.career-grid.grid-med .career-card:nth-child(4) {
+  grid-column: 5 / 6;
+  grid-row: 1 / 7;
+}
+
+.career-grid.grid-med .career-card:nth-child(5) {
+  grid-column: 6 / 9;
+  grid-row: 4 / 7;
+}
+
+.career-grid.grid-med .career-card:nth-child(6) {
+  grid-column: 1 / 5;
+  grid-row: 5 / 7;
+}
+
+
+
+/* =====================
    CARD LAYOUTS - 9 CARDS
 ===================== */
 .career-grid.grid-large .career-card:nth-child(1) {
-  grid-column: 1 / 4;
-  grid-row: 1 / 4;
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
 }
 
 .career-grid.grid-large .career-card:nth-child(2) {
-  grid-column: 4 / 6;
-  grid-row: 1 / 3;
+  grid-column: 5 / 7;
+  grid-row: 1 / 5;
 }
 
 .career-grid.grid-large .career-card:nth-child(3) {
-  grid-column: 6 / 9;
+  grid-column: 7 / 9;
   grid-row: 1 / 3;
+  margin-top: -150px;
 }
 
 .career-grid.grid-large .career-card:nth-child(4) {
-  grid-column: 4 / 7;
-  grid-row: 3 / 5;
+  grid-column: 3 / 5;
+  grid-row: 1 / 4;
 }
 
 .career-grid.grid-large .career-card:nth-child(5) {
@@ -402,21 +437,21 @@ button.nav {
 
 .career-grid.grid-large .career-card:nth-child(6) {
   grid-column: 1 / 3;
-  grid-row: 4 / 7;
+  grid-row: 3 / 7;
 }
 
 .career-grid.grid-large .career-card:nth-child(7) {
   grid-column: 3 / 5;
-  grid-row: 5 / 7;
+  grid-row: 4 / 7;
 }
 
 .career-grid.grid-large .career-card:nth-child(8) {
-  grid-column: 5 / 7;
+  grid-column: 5 / 8;
   grid-row: 5 / 7;
 }
 
 .career-grid.grid-large .career-card:nth-child(9) {
-  grid-column: 7 / 9;
+  grid-column: 8 / 9;
   grid-row: 5 / 7;
 }
 
@@ -428,71 +463,161 @@ button.nav {
     height: 200px;
   }
 }
+
+.p-1rem{
+    padding:1rem !important
+}
+
+.pt-1rem{
+    padding-top:1rem !important
+}
+
+.pb-1rem{
+    padding-bottom:1rem !important
+}
+
+.pl-1rem{
+    padding-left:1rem !important
+}
+
+.pr-1rem{
+    padding-right:1rem !important
+}
+
+.m-0{
+    margin:0 !important
+}
+
+.uppercase{
+    text-transform: uppercase !important
+}
+
+.fw-100{
+    font-weight: 100 !important
+}
+
+.fw-500{
+    font-weight: 500 !important
+}
+
+.fw-800{
+    font-weight: 800 !important
+}
+
+.fs-2rem{
+    font-size: 2rem !important
+}
+
+.fs-3rem{
+    font-size: 3rem !important
+}
+
+.fs-5rem{
+    font-size: 5rem !important
+}
+
+.lh-08{
+    line-height: 0.8 !important
+}
+
+.sticky{
+    position: sticky !important;
+}
+
+.h-50{
+    height: 50px !important;
+}
+
+.bg-till{
+    background-color: #b7a99a !important;
+}
+
+.logo-img{
+    height: 80px;
+    padding: 5px;
+}
+
+.fc-highdesert{
+    color:#7a6855 !important;
+}
+
+.fc-till{
+    color:#b7a99a !important;
+}
 </style>
 </head>
 
 <body>
 
-<div class="quiz-shell">
-  <div class="quiz-card">
+    <div class="branding bg-till">
+        <img src="images/logo.png" alt="OSU Logo" class="logo-img"/>
+    </div>
+    <div class="pt-1rem pl-1rem pr-1rem sticky fc-till">
+        <h1 class="StratumLite m-0 fw-100 fs-3rem">Agriculture & Natural Resources</h1>
+        <h2 class="Stratum2Web m-0 fw-800 fs-5rem uppercase lh-08">Visual Communications</h2>
+    </div>
 
-    <form id="questionForm">
 
-      <div
-        id="questionLayout"
-        class="question-layout"
-        data-layout="intro"
-      >
-        <div class="first-question"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
-        <div class="answers" id="radioContainer"></div>
-      </div>
+    <div class="quiz-shell">
+    <div class="quiz-card">
 
-      <div class="nav-row">
-        <button type="button" id="backButton" class="nav hidden">Back</button>
-      </div>
+        <form id="questionForm">
 
-    </form>
+        <div
+            id="questionLayout"
+            class="question-layout"
+            data-layout="intro"
+        >
+            <div class="first-question"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
+            <div class="answers" id="radioContainer"></div>
+        </div>
 
-  </div>
-</div>
+        <div class="nav-row">
+            <button type="button" id="backButton" class="nav hidden">Back</button>
+        </div>
 
-<!-- RESULTS -->
-<section id="results" class="hidden">
-    <div class="results-shell">
-
-        <!-- CAREERS -->
-        <section id="careersSection" class="results-section">
-            <h2 class="Stratum2Web results-title">
-                Careers You'd Thrive In
-            </h2>
-            <div id="careerGrid" class="career-grid"></div>
-            <button class="arrow-button" id="arrow1">↓</button>
-        </section>
-
-        <!-- COURSES -->
-        <section id="coursesSection" class="results-section hidden">
-            <h2 class="Stratum2Web results-title">
-                Courses That Build These Skills
-            </h2>
-            <ul id="courseList" class="course-list"></ul>
-            <button class="arrow-button" id="arrow2">↓</button>
-        </section>
-
-        <!-- WRAP UP -->
-        <section id="wrapupSection" class="results-section wrapup hidden">
-            <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
-
-            <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
-
-            <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
-
-            <button id="restartButton" class="nav">
-                Restart Quiz
-            </button>
-        </section>
+        </form>
 
     </div>
-</section>
+    </div>
+
+    <!-- RESULTS -->
+    <section id="results" class="hidden">
+        <div class="results-shell">
+
+            <!-- CAREERS -->
+            <section id="careersSection" class="results-section">
+                <h2 class="results-title m-0 fw-500 pb-1rem">
+                    <i>Careers you'd thrive in</i>
+                </h2>
+                <div id="careerGrid" class="career-grid"></div>
+                <button class="arrow-button" id="arrow1">↓</button>
+            </section>
+
+            <!-- COURSES -->
+            <section id="coursesSection" class="results-section hidden">
+                <h2 class="Kievit results-title m-0">
+                    <i>Courses that build these skills</i>
+                </h2>
+                <ul id="courseList" class="course-list"></ul>
+                <button class="arrow-button" id="arrow2">↓</button>
+            </section>
+
+            <!-- WRAP UP -->
+            <section id="wrapupSection" class="results-section wrapup hidden">
+                <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
+
+                <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+
+                <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
+
+                <button id="restartButton" class="nav">
+                    Restart Quiz
+                </button>
+            </section>
+
+        </div>
+    </section>
 
 <script>
     /* =====================
@@ -994,10 +1119,16 @@ function showResults(pathKey) {
   const careerCount = data.careers.length;
   if (careerCount <= 5) {
     careerGrid.classList.add('grid-small');
+    careerGrid.classList.remove('grid-med');
+    careerGrid.classList.remove('grid-large');
+  } else if (careerCount == 6) {
+    careerGrid.classList.add('grid-med');
+    careerGrid.classList.remove('grid-small');
     careerGrid.classList.remove('grid-large');
   } else {
     careerGrid.classList.add('grid-large');
     careerGrid.classList.remove('grid-small');
+    careerGrid.classList.remove('grid-med');
   }
 
   const overlays = [];
