@@ -181,7 +181,7 @@ button.nav {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 /* =====================
@@ -215,6 +215,7 @@ button.nav {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 100px;
 }
 
 .course-list li {
@@ -236,6 +237,7 @@ button.nav {
     color: #d73f09;
     margin-left: 100px;
     margin-right: 100px;
+    margin-top: 100px;
 }
 
 .wrapup-paragraph {
@@ -468,6 +470,10 @@ button.nav {
     padding:1rem !important
 }
 
+.p-5px{
+    padding:5px !important
+}
+
 .pt-1rem{
     padding-top:1rem !important
 }
@@ -532,6 +538,14 @@ button.nav {
     background-color: #b7a99a !important;
 }
 
+.bg-highdesert{
+    background-color: #7a6855 !important;
+}
+
+.bg-orange{
+    background-color: #d73f09 !important;
+}
+
 .logo-img{
     height: 80px;
     padding: 5px;
@@ -544,6 +558,24 @@ button.nav {
 .fc-till{
     color:#b7a99a !important;
 }
+
+.fc-white{
+    color:#ffffff !important;
+}
+
+.flex{
+    display: flex !important;
+    gap: 1rem !important;
+}
+
+.align-center{
+    align-items: center !important;
+}
+
+.justify-center{
+    justify-content: center !important;
+}
+
 </style>
 </head>
 
@@ -552,9 +584,12 @@ button.nav {
     <div class="branding bg-till">
         <img src="images/logo.png" alt="OSU Logo" class="logo-img"/>
     </div>
-    <div class="pt-1rem pl-1rem pr-1rem sticky fc-till">
+    <div class="bg-highdesert flex align-center justify-center">
+        <h2 class="StratumLite m-0 fc-white p-5px">What Kind of Agricultural & Natural Resources Communicator Are You?</h2>
+    </div>
+    <div class="pt-1rem pl-1rem pr-1rem sticky fc-till hidden" id="subtitle">
         <h1 class="StratumLite m-0 fw-100 fs-3rem">Agriculture & Natural Resources</h1>
-        <h2 class="Stratum2Web m-0 fw-800 fs-5rem uppercase lh-08">Visual Communications</h2>
+        <h2 class="Stratum2Web m-0 fw-800 fs-5rem uppercase lh-08" id="path-title"></h2>
     </div>
 
 
@@ -596,8 +631,8 @@ button.nav {
 
             <!-- COURSES -->
             <section id="coursesSection" class="results-section hidden">
-                <h2 class="Kievit results-title m-0">
-                    <i>Courses that build these skills</i>
+                <h2 class="results-title m-0 fw-500 pb-1rem">
+                    <i>Courses that would help you develop <span id="path"></span> skills at Oregon State are</i>
                 </h2>
                 <ul id="courseList" class="course-list"></ul>
                 <button class="arrow-button" id="arrow2">↓</button>
@@ -793,6 +828,8 @@ button.nav {
 
 const resultsData = {
   visual: {
+    career: "visual communication",
+    careerGroup: "Visual Communications",
     careers: [
         {
             title: "Graphic Designer",
@@ -826,6 +863,8 @@ const resultsData = {
   },
 
   writing: {
+    career: "writing",
+    careerGroup: "Commuication Writing",
     careers: [
         {
             title: "Commodity Communications Specialist",
@@ -857,6 +896,8 @@ const resultsData = {
   },
 
   strategy: {
+    career: "communication strategy",
+    careerGroup: "Communication Strategy",
     careers: [
         {
             title: "Communications Strategist",
@@ -888,6 +929,8 @@ const resultsData = {
   },
 
   management: {
+    career: "management",
+    careerGroup: "Communication Management",
     careers: [
         {
             title: "Event or Outreach Coordinator",
@@ -918,6 +961,8 @@ const resultsData = {
   },
 
   advocacy: {
+    career: "advocacy",
+    careerGroup: "Communication Advocacy",
     careers: [
         {
             title: "Advocacy or Outreach Specialist",
@@ -955,6 +1000,8 @@ const resultsData = {
   },
 
   education: {
+    career: "education",
+    careerGroup: "Communication Education",
     careers: [
         {
             title: "Natural Resources Public Information Officer",
@@ -1003,6 +1050,8 @@ const resultsData = {
   },
 
   entrepreneurial: {
+    career: "entrepreneurial",
+    careerGroup: "Entrepreneurial Communication",
     careers: [
         {
             title: "Agricultural Communications Consultant",
@@ -1108,7 +1157,9 @@ renderQuestion(Question1, "intro");
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
-
+    document.getElementById("path-title").textContent = data.careerGroup;
+    document.getElementById("path").textContent = data.career;
+    document.getElementById("subtitle").classList.remove("hidden");
   const careerGrid = document.getElementById("careerGrid");
   const courseList = document.getElementById("courseList");
 
@@ -1209,6 +1260,7 @@ document.getElementById("restartButton").onclick = () => {
     selectedPathKey = null;
     
     // Reset sections
+    document.getElementById("subtitle").classList.add("hidden");
     document.getElementById("careersSection").classList.remove("hidden");
     document.getElementById("coursesSection").classList.add("hidden");
     document.getElementById("wrapupSection").classList.add("hidden");
