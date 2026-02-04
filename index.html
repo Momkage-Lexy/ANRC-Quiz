@@ -119,6 +119,14 @@ html, body {
   display: none;
 }
 
+.question-layout[data-layout="path"] .first-question {
+  padding: 1rem;
+}
+
+.question-layout[data-layout="path"] .answers {
+  padding: 0;
+}
+
 /* MOBILE: all stack */
 @media (max-width: 900px) {
   .question-layout {
@@ -137,6 +145,13 @@ html, body {
     justify-content: center !important;
     padding: 2rem 1rem !important;
     margin-bottom: 2rem;
+  }
+
+  .circle-text-logo{
+    position: relative !important;
+    width: 100px !important;
+    top: 0px !important;
+    right: 0px !important;
   }
 }
 
@@ -316,7 +331,7 @@ button.nav {
   background: none;
   border: none;
   font-size: 2rem;
-  color: #d73f09;
+  color: #232323;
   cursor: pointer;
   padding: 0.5rem;
   line-height: 1;
@@ -332,7 +347,7 @@ button.nav {
   font-family: 'Kievit', sans-serif;
   font-size: 1.2rem;
   line-height: 1.7;
-  color: #d73f09;
+  color: #232323;
 }
 
 .wrapup-paragraph {
@@ -809,15 +824,25 @@ button.nav {
     width: 230px;
 }
 
+.min-h-50vh{
+    min-height: 50vh !important;
+}
+
+.mw-1200px{
+    max-width: 1200px !important;
+}
+
+.space-between{
+    justify-content: space-between !important;
+}
+
 </style>
 </head>
 
 <body>
 
-    <div class="branding">
+    <div class="branding flex space-between">
         <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
-    </div>
-    <div class="">
         <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
     </div>
     <div class="pt-1rem pl-1rem pr-1rem sticky fc-dark hidden" id="subtitle">
@@ -1364,6 +1389,10 @@ function handleAnswer(key) {
     currentIndex = 0;
 
     document.getElementById("backButton").classList.remove("hidden");
+
+    document.querySelector(".quiz-shell").classList.add("min-h-50vh");
+    document.querySelector(".quiz-card").classList.add("mw-1200px");
+
     renderQuestion(currentPath[currentIndex], "path");
     return;
     }
@@ -1389,6 +1418,10 @@ document.getElementById("backButton").onclick = () => {
 
   if (!currentPath) {
     document.getElementById("backButton").classList.add("hidden");
+
+    document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
+    document.querySelector(".quiz-card").classList.remove("mw-1200px");
+
     renderQuestion(Question1, "intro");
   } else {
     renderQuestion(currentPath[currentIndex], "path");
@@ -1543,6 +1576,10 @@ document.getElementById("restartButton").onclick = () => {
     document.getElementById("subtitle").classList.add("hidden");
     document.getElementById("careersSection").classList.remove("hidden");
     document.getElementById("coursesSection").classList.add("hidden");
+
+    document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
+    document.querySelector(".quiz-card").classList.remove("mw-1200px");
+
 };
 </script>
 
