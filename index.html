@@ -234,21 +234,85 @@ button.nav {
 }
 
 /* =====================
-   WRAP UP
+   MODAL STYLES
 ===================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: #fef7f1;
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #d73f09;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.modal-close:hover {
+  transform: rotate(90deg);
+}
+
 .wrapup {
-    text-align: center;
-    font-family: 'Kievit', sans-serif;
-    font-size: 1.2rem;
-    line-height: 1.7;
-    color: #d73f09;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 100px;
+  text-align: center;
+  font-family: 'Kievit', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #d73f09;
 }
 
 .wrapup-paragraph {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 2rem;
+    width: 95%;
+  }
+  
+  .wrapup {
+    font-size: 1rem;
+  }
 }
 
 .arrow-button {
@@ -772,21 +836,26 @@ button.nav {
                 <button class="arrow-button" id="arrow2">↓</button>
             </section>
 
-            <!-- WRAP UP -->
-            <section id="wrapupSection" class="results-section wrapup w-80percent m-auto pt-100px hidden">
-                <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
+        </div>
+    </section>
 
-                <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+    <!-- WRAP UP MODAL -->
+    <div id="wrapupModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="wrapup">
+                <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
 
-                <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
+                <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+
+                <p class="wrapup-paragraph">Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
 
                 <button id="restartButton" class="nav">
                     Restart Quiz
                 </button>
-            </section>
-
+            </div>
         </div>
-    </section>
+    </div>
 
 <script>
     /* =====================
@@ -801,7 +870,7 @@ button.nav {
     QUESTIONS
     ===================== */
     const Question1 = {
-    label: "When you’re working on a project, what part excites you most?",
+    label: "When you're working on a project, what part excites you most?",
     options: [
         { label: "Making it look visually appealing", key: "visual" },
         { label: "Writing or crafting the message", key: "writing" },
@@ -1373,15 +1442,48 @@ function showResults(pathKey) {
   };
 
   document.getElementById("arrow2").onclick = () => {
-    document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.remove("hidden");
+    openModal();
   };
 }
+
+/* =====================
+   MODAL FUNCTIONS
+===================== */
+function openModal() {
+  const modal = document.getElementById("wrapupModal");
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden"; // Prevent scrolling
+}
+
+function closeModal() {
+  const modal = document.getElementById("wrapupModal");
+  modal.classList.remove("active");
+  document.body.style.overflow = ""; // Restore scrolling
+}
+
+// Close modal on X button
+document.getElementById("closeModal").onclick = closeModal;
+
+// Close modal when clicking outside
+document.getElementById("wrapupModal").onclick = (e) => {
+  if (e.target.id === "wrapupModal") {
+    closeModal();
+  }
+};
+
+// Close modal on Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeModal();
+  }
+});
 
 /* =====================
    RESTART
 ===================== */
 document.getElementById("restartButton").onclick = () => {
+    closeModal(); // Close modal first
+    
     currentPath = null;
     currentIndex = 0;
     historyStack.length = 0;
@@ -1397,7 +1499,6 @@ document.getElementById("restartButton").onclick = () => {
     document.getElementById("subtitle").classList.add("hidden");
     document.getElementById("careersSection").classList.remove("hidden");
     document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.add("hidden");
 };
 </script>
 
