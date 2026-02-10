@@ -19,9 +19,8 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background: #ffeedc26;
+  background: #fef7f1;
   height: 100%;
-  max-height: 100vh;
 }
 
 /* =====================
@@ -51,13 +50,11 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  height: 70%;
+  min-height: calc(100vh - 100px); /* Account for header */
 }
 
 .quiz-card {
   width: 100%;
-  max-width: 1200px;
 }
 
 /* =====================
@@ -68,18 +65,41 @@ html, body {
   gap: 2rem;
 }
 
-/* FIRST QUESTION (2-column, label left) */
+/* FIRST QUESTION (2-column, label left with full-height border and image) */
 .question-layout[data-layout="intro"] {
   grid-template-columns: 1fr 2fr;
   align-items: center;
 }
 
 .first-question{
-    height: 500px;
-    border-right: 1px solid #d73f09;
-    display: flex;
-    align-items: center;
-    padding-right: 1rem !important;
+  position: relative;
+  min-height: calc(100vh - 100px);
+  border-right: 1px solid #d73f09;
+  display: flex;
+  align-items: center;
+  padding-right: 1rem !important;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 3rem;
+}
+
+.answers{
+    padding: 3rem;
+}
+
+/* Add overlay for text readability when background image is present */
+.first-question::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(254, 247, 241, 0.85);
+  z-index: 0;
+}
+
+.first-question .question-label {
+  position: relative;
+  z-index: 1;
 }
 
 /* PATH QUESTIONS (label top, 3-column answers) */
@@ -88,21 +108,50 @@ html, body {
 }
 
 .question-layout[data-layout="path"] .first-question{
-    height: auto;
-    border-right: 1px solid #d7400900;
-    display: block;
-    align-items: center;
+  min-height: auto;
+  border-right: 1px solid #d7400900;
+  display: block;
+  align-items: center;
+  background-image: none !important;
 }
+
+.question-layout[data-layout="path"] .first-question::before {
+  display: none;
+}
+
+.question-layout[data-layout="path"] .first-question {
+  padding: 1rem;
+}
+
+.question-layout[data-layout="path"] .answers {
+  padding: 0;
+}
+
 /* MOBILE: all stack */
 @media (max-width: 900px) {
   .question-layout {
     grid-template-columns: 1fr !important;
   }
 
+  .quiz-shell {
+    padding: 1rem;
+    min-height: auto;
+  }
+
   .first-question{
-    height: auto !important;
+    min-height: 40vh !important;
     border-right: 1px solid #d7400900 !important;
+    border-bottom: 1px solid #d73f09 !important;
     justify-content: center !important;
+    padding: 2rem 1rem !important;
+    margin-bottom: 2rem;
+  }
+
+  .circle-text-logo{
+    position: relative !important;
+    width: 100px !important;
+    top: 0px !important;
+    right: 0px !important;
   }
 }
 
@@ -113,6 +162,7 @@ html, body {
   font-size: clamp(1.6rem, 3vw, 2.5rem);
   color: #d73f09;
   line-height: 1.3;
+  padding: 1rem;
 }
 
 /* Center label when stacked */
@@ -234,21 +284,85 @@ button.nav {
 }
 
 /* =====================
-   WRAP UP
+   MODAL STYLES
 ===================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: #fef7f1;
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+  transform: scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #232323;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.modal-close:hover {
+  transform: rotate(90deg);
+}
+
 .wrapup {
-    text-align: center;
-    font-family: 'Kievit', sans-serif;
-    font-size: 1.2rem;
-    line-height: 1.7;
-    color: #d73f09;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 100px;
+  text-align: center;
+  font-family: 'Kievit', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #232323;
 }
 
 .wrapup-paragraph {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    padding: 2rem;
+    width: 95%;
+  }
+  
+  .wrapup {
+    font-size: 1rem;
+  }
 }
 
 .arrow-button {
@@ -698,16 +812,38 @@ button.nav {
 .text-center{
     text-align: center !important;
 }
+
+.branding{
+    border-bottom: 1px solid #d73f09;
+}
+
+.circle-text-logo{
+    position: absolute;
+    top: 20px;
+    right: 100px;
+    width: 230px;
+}
+
+.min-h-50vh{
+    min-height: 50vh !important;
+}
+
+.mw-1200px{
+    max-width: 1200px !important;
+}
+
+.space-between{
+    justify-content: space-between !important;
+}
+
 </style>
 </head>
 
 <body>
 
-    <div class="branding bg-orange">
-        <img src="images/logo.png" alt="OSU Logo" class="logo-img"/>
-    </div>
-    <div class="bg-dark flex align-center justify-center">
-        <h2 class="StratumLite m-0 fc-white p-5px anrc-title">What Kind of Agricultural & Natural Resources Communicator Are You?</h2>
+    <div class="branding flex space-between">
+        <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
+        <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
     </div>
     <div class="pt-1rem pl-1rem pr-1rem sticky fc-dark hidden" id="subtitle">
         <h1 class="StratumLite m-0 fw-100 fs-3rem">Agriculture & Natural Resources</h1>
@@ -725,7 +861,7 @@ button.nav {
             class="question-layout"
             data-layout="intro"
         >
-            <div class="first-question"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
+            <div class="first-question" id="firstQuestion"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
             <div class="answers" id="radioContainer"></div>
         </div>
 
@@ -760,21 +896,26 @@ button.nav {
                 <button class="arrow-button" id="arrow2">↓</button>
             </section>
 
-            <!-- WRAP UP -->
-            <section id="wrapupSection" class="results-section wrapup w-80percent m-auto pt-100px hidden">
-                <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
+        </div>
+    </section>
 
-                <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+    <!-- WRAP UP MODAL -->
+    <div id="wrapupModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="wrapup">
+                <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
 
-                <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
+                <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+
+                <p class="wrapup-paragraph">Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
 
                 <button id="restartButton" class="nav">
                     Restart Quiz
                 </button>
-            </section>
-
+            </div>
         </div>
-    </section>
+    </div>
 
 <script>
     /* =====================
@@ -789,7 +930,8 @@ button.nav {
     QUESTIONS
     ===================== */
     const Question1 = {
-    label: "When you’re working on a project, what part excites you most?",
+    label: "When you're working on a project, what part excites you most?",
+    backgroundImage: "images/your-background-image.jpg", // ADD YOUR IMAGE PATH HERE
     options: [
         { label: "Making it look visually appealing", key: "visual" },
         { label: "Writing or crafting the message", key: "writing" },
@@ -1212,10 +1354,18 @@ function renderQuestion(question, layoutType) {
   const label = document.getElementById("questionLabel");
   const container = document.getElementById("radioContainer");
   const layout = document.getElementById("questionLayout");
+  const firstQuestion = document.getElementById("firstQuestion");
 
   layout.dataset.layout = layoutType;
   label.textContent = question.label;
   container.innerHTML = "";
+
+  // Set background image for first question if it exists
+  if (layoutType === "intro" && question.backgroundImage) {
+    firstQuestion.style.backgroundImage = `url('${question.backgroundImage}')`;
+  } else {
+    firstQuestion.style.backgroundImage = '';
+  }
 
   question.options.forEach(opt => {
     const btn = document.createElement("button");
@@ -1239,6 +1389,10 @@ function handleAnswer(key) {
     currentIndex = 0;
 
     document.getElementById("backButton").classList.remove("hidden");
+
+    document.querySelector(".quiz-shell").classList.add("min-h-50vh");
+    document.querySelector(".quiz-card").classList.add("mw-1200px");
+
     renderQuestion(currentPath[currentIndex], "path");
     return;
     }
@@ -1264,6 +1418,10 @@ document.getElementById("backButton").onclick = () => {
 
   if (!currentPath) {
     document.getElementById("backButton").classList.add("hidden");
+
+    document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
+    document.querySelector(".quiz-card").classList.remove("mw-1200px");
+
     renderQuestion(Question1, "intro");
   } else {
     renderQuestion(currentPath[currentIndex], "path");
@@ -1361,15 +1519,48 @@ function showResults(pathKey) {
   };
 
   document.getElementById("arrow2").onclick = () => {
-    document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.remove("hidden");
+    openModal();
   };
 }
+
+/* =====================
+   MODAL FUNCTIONS
+===================== */
+function openModal() {
+  const modal = document.getElementById("wrapupModal");
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden"; // Prevent scrolling
+}
+
+function closeModal() {
+  const modal = document.getElementById("wrapupModal");
+  modal.classList.remove("active");
+  document.body.style.overflow = ""; // Restore scrolling
+}
+
+// Close modal on X button
+document.getElementById("closeModal").onclick = closeModal;
+
+// Close modal when clicking outside
+document.getElementById("wrapupModal").onclick = (e) => {
+  if (e.target.id === "wrapupModal") {
+    closeModal();
+  }
+};
+
+// Close modal on Escape key
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeModal();
+  }
+});
 
 /* =====================
    RESTART
 ===================== */
 document.getElementById("restartButton").onclick = () => {
+    closeModal(); // Close modal first
+    
     currentPath = null;
     currentIndex = 0;
     historyStack.length = 0;
@@ -1385,7 +1576,10 @@ document.getElementById("restartButton").onclick = () => {
     document.getElementById("subtitle").classList.add("hidden");
     document.getElementById("careersSection").classList.remove("hidden");
     document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.add("hidden");
+
+    document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
+    document.querySelector(".quiz-card").classList.remove("mw-1200px");
+
 };
 </script>
 
