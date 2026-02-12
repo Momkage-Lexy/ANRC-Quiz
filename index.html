@@ -18,9 +18,39 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
+  background: #d73f09;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================
+   CARD WRAPPER
+===================== */
+.page-card {
   background: #fef7f1;
-  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 80%;
+  margin: 0 auto;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 600px) {
+  html, body {
+    padding: 0.75rem;
+  }
+
+  .page-card {
+    border-radius: 10px;
+    height: calc(100vh - 1.5rem);
+  }
 }
 
 /* =====================
@@ -50,7 +80,8 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh - 100px); /* Account for header */
+  flex: 1;
+  min-height: 0;
 }
 
 .quiz-card {
@@ -65,86 +96,27 @@ html, body {
   gap: 2rem;
 }
 
-/* FIRST QUESTION (2-column, label left with full-height border and image) */
-.question-layout[data-layout="intro"] {
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
+/* ALL QUESTIONS: single column, centered */
+.question-layout {
+  grid-template-columns: 1fr !important;
 }
 
-.first-question{
+.first-question {
   position: relative;
-  min-height: calc(100vh - 100px);
-  border-right: 1px solid #d73f09;
-  display: flex;
-  align-items: center;
-  padding-right: 1rem !important;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  padding: 3rem;
-}
-
-.answers{
-    padding: 3rem;
-}
-
-/* Add overlay for text readability when background image is present */
-.first-question::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(254, 247, 241, 0.85);
-  z-index: 0;
-}
-
-.first-question .question-label {
-  position: relative;
-  z-index: 1;
-}
-
-/* PATH QUESTIONS (label top, 3-column answers) */
-.question-layout[data-layout="path"] {
-  grid-template-columns: 1fr;
-}
-
-.question-layout[data-layout="path"] .first-question{
-  min-height: auto;
-  border-right: 1px solid #d7400900;
   display: block;
-  align-items: center;
   background-image: none !important;
+  border: none;
+  padding: 2rem 2rem 0.5rem 2rem;
 }
 
-.question-layout[data-layout="path"] .first-question::before {
+.first-question::before {
   display: none;
 }
 
-.question-layout[data-layout="path"] .first-question {
-  padding: 1rem;
-}
-
-.question-layout[data-layout="path"] .answers {
-  padding: 0;
-}
-
-/* MOBILE: all stack */
+/* MOBILE */
 @media (max-width: 900px) {
-  .question-layout {
-    grid-template-columns: 1fr !important;
-  }
-
   .quiz-shell {
     padding: 1rem;
-    min-height: auto;
-  }
-
-  .first-question{
-    min-height: 40vh !important;
-    border-right: 1px solid #d7400900 !important;
-    border-bottom: 1px solid #d73f09 !important;
-    justify-content: center !important;
-    padding: 2rem 1rem !important;
-    margin-bottom: 2rem;
   }
 
   .circle-text-logo{
@@ -159,14 +131,9 @@ html, body {
    LABEL
 ===================== */
 .question-label {
-  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
   color: #d73f09;
   line-height: 1.3;
-  padding: 1rem;
-}
-
-/* Center label when stacked */
-.question-layout[data-layout="path"] .question-label {
   text-align: center;
 }
 
@@ -176,16 +143,8 @@ html, body {
 .answers {
   display: grid;
   gap: 1rem;
-}
-
-/* 2 columns for first question */
-.question-layout[data-layout="intro"] .answers {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-/* 3 columns for path questions */
-.question-layout[data-layout="path"] .answers {
   grid-template-columns: repeat(3, 1fr);
+  padding: 1rem 2rem 2rem 2rem;
 }
 
 /* Mobile: always 1 column */
@@ -248,7 +207,7 @@ button.nav {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 1rem;
 }
 
 .results-title {
@@ -258,28 +217,25 @@ button.nav {
 }
 
 .results-section {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding: 2rem;
 }
 /* =====================
    COURSES
 ===================== */
 .course-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
+  list-style: circle;
+  padding-right: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  margin-top: 70px;
-  width: 80%;
+  margin-top: 1.5rem;
+  width: 90%;
 }
 
 .course-list li {
   color: #d73f09;
-  padding: 1.25rem 1.5rem;
-  border-radius: 999px;
-  border: 2px solid #d73f09;
   font-family: 'Kievit', sans-serif;
 }
 
@@ -369,10 +325,10 @@ button.nav {
     background: none;
     border: none;
     color: #d73f09;
-    font-size: 3rem;
+    font-size: 2rem;
     cursor: pointer;
-    padding: 2rem;
-    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    margin-top: 0.5rem;
     transition: transform 0.3s ease;
     z-index: 10;
 }
@@ -388,12 +344,11 @@ button.nav {
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(6, 1fr);
   gap: 0.5rem;
-  height: 600px;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
+  height: 300px;
+  width: 100%;
   padding: 0 1rem;
   box-sizing: border-box;
-  margin-top: 50px;
+  margin-top: 1rem;
 }
 
 @media (max-width: 914px) {
@@ -404,9 +359,7 @@ button.nav {
 
 @media (max-width: 768px) {
   .career-grid {
- /*   grid-template-columns: repeat(4, 1fr);*/
-  /*  grid-template-rows: repeat(8, 1fr);*/
-    height: 500px;
+    height: 320px;
   }
 
   .career-overlay {
@@ -525,7 +478,7 @@ button.nav {
 
 @media (min-width: 500px) and (max-width: 1024px) {
   .career-grid{
-    height: 500px !important;
+    height: 350px !important;
   }
 }
 
@@ -620,6 +573,10 @@ button.nav {
   grid-row: 1 / 3;
 }
 
+.career-grid.grid-large .career-card:nth-child(1) .career-overlay{
+  font-size: 1.5rem !important;
+}
+
 .career-grid.grid-large .career-card:nth-child(2) {
   grid-column: 5 / 7;
   grid-row: 1 / 5;
@@ -639,6 +596,10 @@ button.nav {
 .career-grid.grid-large .career-card:nth-child(5) {
   grid-column: 7 / 9;
   grid-row: 3 / 5;
+}
+
+.career-grid.grid-large .career-card:nth-child(5) .career-overlay{
+  font-size: 1.5rem !important;
 }
 
 .career-grid.grid-large .career-card:nth-child(6) {
@@ -840,7 +801,8 @@ button.nav {
 </head>
 
 <body>
-<div>
+<div class="page-card">
+<div style="display:flex; flex-direction:column; height:100%;">
     <div class="branding flex space-between sticky">
         <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
         <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
@@ -917,6 +879,7 @@ button.nav {
         </div>
     </div>
 </div>
+</div>
 <script>
     /* =====================
     STATE
@@ -931,7 +894,7 @@ button.nav {
     ===================== */
     const Question1 = {
     label: "When you're working on a project, what part excites you most?",
-    backgroundImage: "images/your-background-image.jpg", // ADD YOUR IMAGE PATH HERE
+    backgroundImage: "images/your-background-image.jpg",
     options: [
         { label: "Making it look visually appealing", key: "visual" },
         { label: "Writing or crafting the message", key: "writing" },
@@ -1086,35 +1049,16 @@ button.nav {
     entrepreneurial: EntrepreneurialPath
     };
 
-/* =====================
-   RESULTS
-===================== */
-
 const resultsData = {
   visual: {
     career: "visual communication",
     careerGroup: "Visual Communications",
     careers: [
-        {
-            title: "Graphic Designer",
-            image: "images/designer.jpg"
-        },
-        {
-            title: "Social Media Manager",
-            image: "images/social-media.jpg"
-        },
-        {
-            title: "Digital Content Creator",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Photographer or Videographer",
-            image: "images/photographer.jpg"
-        },
-        {
-            title: "Marketing or Branding Specialist",
-            image: "images/branding.jpg"
-        }
+        { title: "Graphic Designer", image: "images/designer.jpg" },
+        { title: "Social Media Manager", image: "images/social-media.jpg" },
+        { title: "Digital Content Creator", image: "images/digital-content.jpg" },
+        { title: "Photographer or Videographer", image: "images/photographer.jpg" },
+        { title: "Marketing or Branding Specialist", image: "images/branding.jpg" }
     ],
     courses: [
         "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
@@ -1125,31 +1069,15 @@ const resultsData = {
         "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
     ]
   },
-
   writing: {
     career: "writing",
     careerGroup: "Commuication Writing",
     careers: [
-        {
-            title: "Commodity Communications Specialist",
-            image: "images/talking.jpg"
-        },
-        {
-            title: "Agricultural Journalist",
-            image: "images/journalist.jpg"
-        },
-        {
-            title: "Public Relations Coordinator",
-            image: "images/video-call.jpg"
-        },
-        {
-            title: "Freelance Writer",
-            image: "images/writer.jpg"
-        },
-        {
-            title: "Magazine Editor",
-            image: "images/marketing.jpg"
-        }
+        { title: "Commodity Communications Specialist", image: "images/talking.jpg" },
+        { title: "Agricultural Journalist", image: "images/journalist.jpg" },
+        { title: "Public Relations Coordinator", image: "images/video-call.jpg" },
+        { title: "Freelance Writer", image: "images/writer.jpg" },
+        { title: "Magazine Editor", image: "images/marketing.jpg" }
     ],
     courses: [
         "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
@@ -1158,31 +1086,15 @@ const resultsData = {
         "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
     ]
   },
-
   strategy: {
     career: "communication strategy",
     careerGroup: "Communication Strategy",
     careers: [
-        {
-            title: "Communications Strategist",
-            image: "images/strategist.jpg"
-        },
-        {
-            title: "Audience Research Analyst",
-            image: "images/analyst.jpg"
-        },
-        {
-            title: "Public Affairs Communicator",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "Campaign Planner",
-            image: "images/planner.jpg"
-        },
-        {
-            title: "Marketing Coordinator",
-            image: "images/marketing.jpg"
-        }
+        { title: "Communications Strategist", image: "images/strategist.jpg" },
+        { title: "Audience Research Analyst", image: "images/analyst.jpg" },
+        { title: "Public Affairs Communicator", image: "images/public-affairs.jpg" },
+        { title: "Campaign Planner", image: "images/planner.jpg" },
+        { title: "Marketing Coordinator", image: "images/marketing.jpg" }
     ],
     courses: [
         "AGCM 351: Communicating Global Agriculture & Natural Resources Issues",
@@ -1191,31 +1103,15 @@ const resultsData = {
         "AGCM 364: Professional Development for Agriculture and Natural Resources Communication"
     ]
   },
-
   management: {
     career: "management",
     careerGroup: "Communication Management",
     careers: [
-        {
-            title: "Event or Outreach Coordinator",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Project Manager",
-            image: "images/video-call.jpg"
-        },
-        {
-            title: "Communications Lead",
-            image: "images/branding.jpg"
-        },
-        {
-            title: "Extension Program Director",
-            image: "images/hangout.jpg"
-        },
-        {
-            title: "Nonprofit Administrator",
-            image: "images/marketing.jpg"
-        }
+        { title: "Event or Outreach Coordinator", image: "images/clipboard.jpg" },
+        { title: "Project Manager", image: "images/video-call.jpg" },
+        { title: "Communications Lead", image: "images/branding.jpg" },
+        { title: "Extension Program Director", image: "images/hangout.jpg" },
+        { title: "Nonprofit Administrator", image: "images/marketing.jpg" }
     ],
     courses: [
         "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
@@ -1223,35 +1119,16 @@ const resultsData = {
         "AGCM 455: Risk & Crisis Communications in Ag Sci & Natural Resources"
     ]
   },
-
   advocacy: {
     career: "advocacy",
     careerGroup: "Communication Advocacy",
     careers: [
-        {
-            title: "Advocacy or Outreach Specialist",
-            image: "images/walkie-talkie.jpg"
-        },
-        {
-            title: "Policy or Government Communicator",
-            image: "images/business.jpg"
-        },
-        {
-            title: "Industry Spokesperson",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "AG/NR Lobbyist",
-            image: "images/energy.jpg"
-        },
-        {
-            title: "Crisis & Risk Communication Professional",
-            image: "images/people-meeting.jpg"
-        },
-        {
-            title: "Social Media Advocate",
-            image: "images/social-media.jpg"
-        }
+        { title: "Advocacy or Outreach Specialist", image: "images/walkie-talkie.jpg" },
+        { title: "Policy or Government Communicator", image: "images/business.jpg" },
+        { title: "Industry Spokesperson", image: "images/public-affairs.jpg" },
+        { title: "AG/NR Lobbyist", image: "images/energy.jpg" },
+        { title: "Crisis & Risk Communication Professional", image: "images/people-meeting.jpg" },
+        { title: "Social Media Advocate", image: "images/social-media.jpg" }
     ],
     courses: [
         "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
@@ -1262,47 +1139,19 @@ const resultsData = {
         "AGCM 445: Social media advocacy in Agri Sciences & Natural Resources"
     ]
   },
-
   education: {
     career: "education",
     careerGroup: "Communication Education",
     careers: [
-        {
-            title: "Natural Resources Public Information Officer",
-            image: "images/seminar.jpg"
-        },
-        {
-            title: "Extension Educator",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Outreach & Education Coordinator",
-            image: "images/talking.jpg"
-        },
-        {
-            title: "Environmental or Conservation Educator",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Interpretive Specialist (parks, forests, wildlife)",
-            image: "images/walkie-talkie.jpg"
-        },
-        {
-            title: "Museum or Visitor Center Communicator",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "Agricultural Literacy Specialist",
-            image: "images/writer.jpg"
-        },
-        {
-            title: "AG/NR Curriculum Developer",
-            image: "images/idea.jpg"
-        },
-        {
-            title: "AG/NR Teacher",
-            image: "images/teaching.jpg"
-        }
+        { title: "Natural Resources Public Information Officer", image: "images/seminar.jpg" },
+        { title: "Extension Educator", image: "images/digital-content.jpg" },
+        { title: "Outreach & Education Coordinator", image: "images/talking.jpg" },
+        { title: "Environmental or Conservation Educator", image: "images/clipboard.jpg" },
+        { title: "Interpretive Specialist (parks, forests, wildlife)", image: "images/walkie-talkie.jpg" },
+        { title: "Museum or Visitor Center Communicator", image: "images/public-affairs.jpg" },
+        { title: "Agricultural Literacy Specialist", image: "images/writer.jpg" },
+        { title: "AG/NR Curriculum Developer", image: "images/idea.jpg" },
+        { title: "AG/NR Teacher", image: "images/teaching.jpg" }
     ],
     courses: [
         "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
@@ -1312,31 +1161,15 @@ const resultsData = {
         "AGCM 444: Communication Strategies for Agriculture and Natural Resources"
     ]
   },
-
   entrepreneurial: {
     career: "entrepreneurial",
     careerGroup: "Entrepreneurial Communication",
     careers: [
-        {
-            title: "Agricultural Communications Consultant",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Producer-Marketer (Direct-to-Consumer Beef, Crops, etc.)",
-            image: "images/people-meeting.jpg"
-        },
-        {
-            title: "Ag Business Brand Builder",
-            image: "images/specialist.jpg"
-        },
-        {
-            title: "Freelance Content Creator (Ag & NR)",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Cooperative or Small Business Communications Lead",
-            image: "images/talking.jpg"
-        }
+        { title: "Agricultural Communications Consultant", image: "images/clipboard.jpg" },
+        { title: "Producer-Marketer (Direct-to-Consumer Beef, Crops, etc.)", image: "images/people-meeting.jpg" },
+        { title: "Ag Business Brand Builder", image: "images/specialist.jpg" },
+        { title: "Freelance Content Creator (Ag & NR)", image: "images/digital-content.jpg" },
+        { title: "Cooperative or Small Business Communications Lead", image: "images/talking.jpg" }
     ],
     courses: [
         "AGCM 364: Professional Development for agriculture and natural resources communication",
@@ -1347,9 +1180,6 @@ const resultsData = {
   }
 };
 
-/* =====================
-   RENDER
-===================== */
 function renderQuestion(question, layoutType) {
   const label = document.getElementById("questionLabel");
   const container = document.getElementById("radioContainer");
@@ -1360,9 +1190,8 @@ function renderQuestion(question, layoutType) {
   label.textContent = question.label;
   container.innerHTML = "";
 
-  // Set background image for first question if it exists
   if (layoutType === "intro" && question.backgroundImage) {
-    firstQuestion.style.backgroundImage = `url('${question.backgroundImage}')`;
+    // background image no longer used in unified layout
   } else {
     firstQuestion.style.backgroundImage = '';
   }
@@ -1377,9 +1206,6 @@ function renderQuestion(question, layoutType) {
   });
 }
 
-/* =====================
-   FLOW
-===================== */
 function handleAnswer(key) {
   historyStack.push({ currentPath, currentIndex });
 
@@ -1406,9 +1232,6 @@ function handleAnswer(key) {
   }
 }
 
-/* =====================
-   BACK
-===================== */
 document.getElementById("backButton").onclick = () => {
   const prev = historyStack.pop();
   if (!prev) return;
@@ -1428,12 +1251,8 @@ document.getElementById("backButton").onclick = () => {
   }
 };
 
-/* INIT */
 renderQuestion(Question1, "intro");
 
-/* =====================
-   RESULTS
-===================== */
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
@@ -1446,7 +1265,6 @@ function showResults(pathKey) {
   careerGrid.innerHTML = "";
   courseList.innerHTML = "";
 
-  // Add layout class based on number of careers
   const careerCount = data.careers.length;
   if (careerCount <= 5) {
     careerGrid.classList.add('grid-small');
@@ -1479,28 +1297,18 @@ function showResults(pathKey) {
     overlays.push(overlay);
   });
 
-  // Sequential overlay hiding/showing
   let currentIndex = 0;
   
   function cycleOverlays() {
     const overlay = overlays[currentIndex];
-    
-    // Hide current overlay
     overlay.classList.add("hidden");
-    
-    // Show it again after 2-3 seconds
     setTimeout(() => {
       overlay.classList.remove("hidden");
-      
-      // Move to next card after showing again
       currentIndex = (currentIndex + 1) % overlays.length;
-      
-      // Wait a bit before next card hides (1-2 seconds)
       setTimeout(cycleOverlays, 500 + Math.random() * 500);
     }, 1000 + Math.random() * 500);
   }
   
-  // Start the cycle after initial delay
   setTimeout(cycleOverlays, 500);
 
   data.courses.forEach(course => {
@@ -1512,7 +1320,6 @@ function showResults(pathKey) {
   document.querySelector(".quiz-shell").classList.add("hidden");
   document.getElementById("results").classList.remove("hidden");
   
-  // Set up arrow navigation - MUST BE AFTER results are shown
   document.getElementById("arrow1").onclick = () => {
     document.getElementById("careersSection").classList.add("hidden");
     document.getElementById("coursesSection").classList.remove("hidden");
@@ -1523,43 +1330,34 @@ function showResults(pathKey) {
   };
 }
 
-/* =====================
-   MODAL FUNCTIONS
-===================== */
 function openModal() {
   const modal = document.getElementById("wrapupModal");
   modal.classList.add("active");
-  document.body.style.overflow = "hidden"; // Prevent scrolling
+  document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
   const modal = document.getElementById("wrapupModal");
   modal.classList.remove("active");
-  document.body.style.overflow = ""; // Restore scrolling
+  document.body.style.overflow = "";
 }
 
-// Close modal on X button
 document.getElementById("closeModal").onclick = closeModal;
 
-// Close modal when clicking outside
 document.getElementById("wrapupModal").onclick = (e) => {
   if (e.target.id === "wrapupModal") {
     closeModal();
   }
 };
 
-// Close modal on Escape key
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     closeModal();
   }
 });
 
-/* =====================
-   RESTART
-===================== */
 document.getElementById("restartButton").onclick = () => {
-    closeModal(); // Close modal first
+    closeModal();
     
     currentPath = null;
     currentIndex = 0;
@@ -1572,14 +1370,12 @@ document.getElementById("restartButton").onclick = () => {
     renderQuestion(Question1, "intro");
     selectedPathKey = null;
     
-    // Reset sections
     document.getElementById("subtitle").classList.add("hidden");
     document.getElementById("careersSection").classList.remove("hidden");
     document.getElementById("coursesSection").classList.add("hidden");
 
     document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
     document.querySelector(".quiz-card").classList.remove("mw-1200px");
-
 };
 </script>
 
