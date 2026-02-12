@@ -96,6 +96,13 @@ html, body {
   gap: 2rem;
 }
 
+@media (max-width:900px){
+  .question-layout{
+    gap: 0;
+  }
+}
+
+
 /* ALL QUESTIONS: single column, centered */
 .question-layout {
   grid-template-columns: 1fr !important;
@@ -118,7 +125,9 @@ html, body {
   .quiz-shell {
     padding: 1rem;
   }
+}
 
+@media (max-width: 900px) {
   .circle-text-logo{
     position: relative !important;
     width: 100px !important;
@@ -127,6 +136,11 @@ html, body {
   }
 }
 
+@media (min-width: 900px) and (max-width:1460px) {
+  .circle-text-logo{
+    width: 130px !important;
+  }
+}
 /* =====================
    LABEL
 ===================== */
@@ -407,7 +421,7 @@ button.nav {
   overflow: hidden;
   background-image: var(--bg);
   background-size: cover;
-  background-position: top;
+  background-position: center;
   cursor: pointer;
   border-radius: 0;
 }
@@ -726,7 +740,7 @@ button.nav {
 
 .logo-img{
     height: 80px;
-    padding: 5px;
+    padding: 8px;
 }
 
 .fc-highdesert{
