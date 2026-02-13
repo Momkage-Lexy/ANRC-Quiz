@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("anrc-quiz")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6f266fd8bb4d48537d27d40ebf60531cfd5f6e0e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+22e96b6b96b659eec3c46e60c833fcdfd5887265")]
 [assembly: System.Reflection.AssemblyProductAttribute("anrc-quiz")]
 [assembly: System.Reflection.AssemblyTitleAttribute("anrc-quiz")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
