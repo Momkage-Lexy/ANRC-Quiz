@@ -246,7 +246,7 @@ button.nav {
    COURSES
 ===================== */
 .course-list {
-  list-style: circle;
+  list-style: none;
   padding-right: 10px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -258,6 +258,9 @@ button.nav {
 .course-list li {
   color: #d73f09;
   font-family: 'Kievit', sans-serif;
+  padding: 1rem 1.25rem;
+  border-radius: 999px;
+  border: 2px solid #d73f09;
 }
 
 /* =====================
@@ -834,7 +837,7 @@ button.nav {
 
 
     <div class="quiz-shell">
-    <div class="quiz-card">
+    <div class="quiz-card mw-1200px">
 
         <form id="questionForm">
 
@@ -1263,7 +1266,6 @@ document.getElementById("backButton").onclick = () => {
     document.getElementById("backButton").classList.add("hidden");
 
     document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
-    document.querySelector(".quiz-card").classList.remove("mw-1200px");
 
     renderQuestion(Question1, "intro");
   } else {
@@ -1395,7 +1397,6 @@ document.getElementById("restartButton").onclick = () => {
     document.getElementById("coursesSection").classList.add("hidden");
 
     document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
-    document.querySelector(".quiz-card").classList.remove("mw-1200px");
 };
 </script>
 
