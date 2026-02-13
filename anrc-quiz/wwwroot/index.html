@@ -754,6 +754,7 @@ let currentPath = null;
 let currentIndex = 0;
 const historyStack = [];
 let selectedPathKey = null;
+const answerLog = []; // tracks { question, answer } for each step
 
 const Question1 = {
   label: "When you're working on a project, what part excites you most?",
@@ -1003,15 +1004,16 @@ function renderQuestion(question, layoutType) {
     btn.type = "button";
     btn.className = "answer";
     btn.textContent = opt.label;
-    btn.onclick = () => handleAnswer(opt.key);
+    btn.onclick = () => handleAnswer(opt.key, opt.label);
     container.appendChild(btn);
   });
 }
 
-function handleAnswer(key) {
-  historyStack.push({ currentPath, currentIndex });
+function handleAnswer(key, label) {
+  historyStack.push({ currentPath, currentIndex, answerLogLength: answerLog.length });
 
   if (!currentPath) {
+    answerLog.push(label);
     selectedPathKey = key;
     currentPath = paths[key];
     currentIndex = 0;
@@ -1021,6 +1023,7 @@ function handleAnswer(key) {
     return;
   }
 
+  answerLog.push(label);
   currentIndex++;
 
   if (currentIndex < currentPath.length) {
@@ -1036,6 +1039,7 @@ document.getElementById("backButton").onclick = () => {
 
   currentPath = prev.currentPath;
   currentIndex = prev.currentIndex;
+  answerLog.length = prev.answerLogLength;
 
   if (!currentPath) {
     document.getElementById("backButton").classList.add("hidden");
@@ -1051,6 +1055,16 @@ renderQuestion(Question1, "intro");
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
+
+  // Save response to database (Electron only)
+  if (window.quizAPI && window.quizAPI.saveResponse) {
+    window.quizAPI.saveResponse({
+      question1: answerLog[0] || '',
+      question2: answerLog[1] || '',
+      question3: answerLog[2] || '',
+      path: data.careerGroup
+    });
+  }
 
   document.getElementById("path-title").textContent = data.careerGroup;
   document.getElementById("path").textContent = data.career;
@@ -1135,6 +1149,7 @@ function restartQuiz() {
   currentIndex = 0;
   historyStack.length = 0;
   selectedPathKey = null;
+  answerLog.length = 0;
 
   document.getElementById("results").classList.add("hidden");
   document.querySelector(".quiz-shell").classList.remove("hidden");

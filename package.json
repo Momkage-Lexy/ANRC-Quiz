@@ -8,9 +8,13 @@
     "build": "electron-builder --win portable",
     "build:installer": "electron-builder --win nsis"
   },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  },
   "devDependencies": {
     "electron": "^35.0.0",
-    "electron-builder": "^26.0.0"
+    "electron-builder": "^26.0.0",
+    "electron-rebuild": "^3.2.9"
   },
   "build": {
     "appId": "edu.oregonstate.anrc-quiz",
@@ -20,6 +24,7 @@
     },
     "files": [
       "main.js",
+      "preload.js",
       "index.html",
       "manifest.json",
       "images/**/*",
