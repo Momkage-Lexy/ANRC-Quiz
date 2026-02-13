@@ -322,7 +322,7 @@ button.nav {
 }
 
 /* Mobile: single column */
-@media (max-width: 500px) {
+@media (max-width: 900px) {
   .career-grid {
     grid-template-columns: 1fr !important;
     grid-template-rows: auto !important;
@@ -468,6 +468,11 @@ button.nav {
   grid-column: 1 / 2;
   grid-row: 1 / 3;
 }
+
+.career-grid.grid-large .career-card:nth-child(1) .career-overlay, .career-grid.grid-large .career-card:nth-child(3) .career-overlay{
+  font-size: 1.2rem;
+}
+
 .career-grid.grid-large .career-card:nth-child(2) {
   grid-column: 2 / 4;
   grid-row: 1 / 3;
