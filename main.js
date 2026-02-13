@@ -9,6 +9,7 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({
+    show: false,
     fullscreen: true,
     kiosk: true,
     frame: false,
@@ -21,6 +22,14 @@ function createWindow() {
   });
 
   win.loadFile('index.html');
+
+  // Ensure fullscreen is active once the page is ready (some Windows
+  // tablets ignore the constructor flag until the window is shown)
+  win.once('ready-to-show', () => {
+    win.setFullScreen(true);
+    win.setKiosk(true);
+    win.show();
+  });
 
   // Block navigation away from the quiz
   win.webContents.on('will-navigate', (e) => e.preventDefault());
