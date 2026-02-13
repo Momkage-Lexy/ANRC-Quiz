@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Career Quiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ANRC Career Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- PWA / Kiosk -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#d73f09" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ANRC Quiz" />
+<link rel="apple-touch-icon" href="images/icon-192.png" />
 
 <style>
 *,
@@ -581,6 +589,102 @@ button.nav {
 /* subtitle heading — scales with viewport height so it doesn't crowd the grid */
 #subtitle h1 { font-size: clamp(1rem, 3vh, 3rem); margin: 0; }
 #subtitle h2 { font-size: clamp(1.5rem, 6vh, 5rem); margin: 0; line-height: 0.85; }
+
+/* =====================
+   KIOSK / TABLET MODE
+===================== */
+
+/* Prevent text selection, callouts, and tap highlight */
+html.kiosk-mode {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+html.kiosk-mode body {
+  overscroll-behavior: none;
+}
+
+/* Disable long-press context menu on images */
+html.kiosk-mode img {
+  pointer-events: none;
+}
+
+/* Full-screen page card in kiosk/standalone mode */
+@media (display-mode: fullscreen), (display-mode: standalone) {
+  html, body {
+    background: #fef7f1;
+    padding: 0;
+  }
+  .page-card {
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+    border-radius: 0;
+  }
+}
+
+/* Touch-friendly: active states for buttons (hover doesn't work on touch) */
+@media (pointer: coarse) {
+  .answer:active {
+    background: #d73f09;
+    color: white;
+  }
+  .career-card:active .career-overlay {
+    background: rgba(215, 63, 9, 0.95);
+  }
+  .arrow-button:active {
+    transform: translateY(5px);
+  }
+  /* Larger tap targets on tablet */
+  .answer {
+    padding: 1.2rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  button.nav {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Inactivity overlay */
+#kioskIdleOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(215, 63, 9, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
+}
+
+#kioskIdleOverlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#kioskIdleOverlay .idle-text {
+  color: white;
+  font-family: 'Stratum2Web', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  padding: 2rem;
+}
+
+#kioskIdleOverlay .idle-subtext {
+  color: rgba(255,255,255,0.8);
+  font-family: 'Kievit', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  margin-top: 1rem;
+}
 </style>
 </head>
 
@@ -651,6 +755,12 @@ button.nav {
   </div>
 
 </div>
+</div>
+
+<!-- Kiosk idle screen -->
+<div id="kioskIdleOverlay">
+  <div class="idle-text">Tap to Start</div>
+  <div class="idle-subtext">Discover your career in Agriculture &amp; Natural Resources Communication</div>
 </div>
 
 <script>
@@ -1033,7 +1143,7 @@ document.getElementById("wrapupModal").onclick = e => {
 };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
-document.getElementById("restartButton").onclick = () => {
+function restartQuiz() {
   closeModal();
   currentPath = null;
   currentIndex = 0;
@@ -1049,7 +1159,84 @@ document.getElementById("restartButton").onclick = () => {
   document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
 
   renderQuestion(Question1, "intro");
-};
+}
+
+document.getElementById("restartButton").onclick = restartQuiz;
+
+/* =====================
+   KIOSK MODE
+===================== */
+(function initKiosk() {
+  const IDLE_TIMEOUT = 90000; // 90 seconds of inactivity
+  const isStandalone = window.matchMedia('(display-mode: fullscreen)').matches
+    || window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone === true;
+
+  // Enable kiosk CSS class
+  document.documentElement.classList.add('kiosk-mode');
+
+  // Prevent pinch-to-zoom and double-tap zoom
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  // Disable context menu (long-press)
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // --- Inactivity auto-reset ---
+  const idleOverlay = document.getElementById('kioskIdleOverlay');
+  let idleTimer = null;
+
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    if (idleOverlay.classList.contains('active')) {
+      idleOverlay.classList.remove('active');
+    }
+    idleTimer = setTimeout(onIdle, IDLE_TIMEOUT);
+  }
+
+  function onIdle() {
+    // Only show idle screen if not on the first question
+    if (currentPath !== null || document.getElementById("wrapupModal").classList.contains("active")) {
+      restartQuiz();
+      idleOverlay.classList.add('active');
+    }
+  }
+
+  // Tap idle overlay to dismiss and start fresh
+  idleOverlay.addEventListener('click', () => {
+    idleOverlay.classList.remove('active');
+    resetIdleTimer();
+  });
+
+  // Track all user interactions to reset idle timer
+  ['touchstart', 'click', 'scroll', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
+
+  // Start idle timer
+  resetIdleTimer();
+
+  // --- Wake Lock (prevent screen dimming) ---
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        await navigator.wakeLock.request('screen');
+      } catch (_) {
+        // Wake lock request failed (e.g., low battery)
+      }
+    }
+  }
+  requestWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') requestWakeLock();
+  });
+
+  // --- Service Worker registration ---
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+})();
 </script>
 </body>
 </html>
