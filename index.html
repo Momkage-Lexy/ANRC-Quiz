@@ -1232,8 +1232,9 @@ document.getElementById("restartButton").onclick = restartQuiz;
     if (document.visibilityState === 'visible') requestWakeLock();
   });
 
-  // --- Service Worker registration ---
-  if ('serviceWorker' in navigator) {
+  // --- Service Worker registration (browser only, not needed in Electron) ---
+  const isElectron = navigator.userAgent.toLowerCase().includes('electron');
+  if (!isElectron && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
 })();

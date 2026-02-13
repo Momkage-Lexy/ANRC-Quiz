@@ -1,0 +1,46 @@
+{
+  "name": "anrc-quiz",
+  "version": "1.0.0",
+  "description": "ANRC Career Quiz – Tablet Kiosk App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "edu.oregonstate.anrc-quiz",
+    "productName": "ANRC Career Quiz",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "manifest.json",
+      "images/**/*",
+      "Stratum2-Medium.otf",
+      "Stratum2-Light.otf",
+      "Stratum2-Thin.otf",
+      "KievitOffc-Medi.ttf"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "images/icon-512.png"
+    },
+    "portable": {
+      "artifactName": "ANRC-Quiz.exe"
+    },
+    "nsis": {
+      "oneClick": true,
+      "allowToChangeInstallationDirectory": false,
+      "artifactName": "ANRC-Quiz-Setup.exe"
+    }
+  }
+}
