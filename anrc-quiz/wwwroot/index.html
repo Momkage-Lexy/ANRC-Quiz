@@ -1167,12 +1167,12 @@ document.getElementById("restartButton").onclick = restartQuiz;
 ===================== */
 (function initKiosk() {
   const IDLE_TIMEOUT = 90000; // 90 seconds of inactivity
-  const isStandalone = window.matchMedia('(display-mode: fullscreen)').matches
-    || window.matchMedia('(display-mode: standalone)').matches
-    || window.navigator.standalone === true;
+  const isElectron = navigator.userAgent.toLowerCase().includes('electron');
 
-  // Enable kiosk CSS class
-  document.documentElement.classList.add('kiosk-mode');
+  // Only apply kiosk layout overrides inside Electron
+  if (isElectron) {
+    document.documentElement.classList.add('kiosk-mode');
+  }
 
   // Prevent pinch-to-zoom and double-tap zoom
   document.addEventListener('touchmove', e => {
@@ -1232,7 +1232,6 @@ document.getElementById("restartButton").onclick = restartQuiz;
   });
 
   // --- Service Worker registration (browser only, not needed in Electron) ---
-  const isElectron = navigator.userAgent.toLowerCase().includes('electron');
   if (!isElectron && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
