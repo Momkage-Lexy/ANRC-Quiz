@@ -101,7 +101,7 @@ html, body {
 }
 
 @media (max-width: 900px) {
-  .quiz-shell { padding: 1rem; }
+  .quiz-shell { padding: 1rem; align-items: flex-start; }
   .circle-text-logo {
     position: relative !important;
     width: 100px !important;
@@ -126,10 +126,20 @@ html, body {
   gap: 1rem;
   grid-template-columns: repeat(3, 1fr);
   padding: 1rem 2rem 2rem 2rem;
+  align-items: stretch;
 }
 
 @media (max-width: 900px) {
   .answers { grid-template-columns: 1fr !important; }
+  [data-layout="intro"] .answers { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 700px) {
+  [data-layout="intro"] .answers { grid-template-columns: 1fr !important; }
+  .answers .answer:nth-child(7):last-child { grid-column: auto; }
+  .answers { padding: 0.5rem 1rem 1rem 1rem; gap: 0.5rem; }
+  .first-question { padding: 1rem 1rem 0.25rem 1rem; }
+  .question-label { font-size: clamp(1.1rem, 2vw, 1.6rem); }
 }
 
 .answer {
@@ -142,6 +152,10 @@ html, body {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .answer:hover {
@@ -680,7 +694,7 @@ html.kiosk-mode img {
 
   <div class="branding flex space-between sticky">
     <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
-    <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
+  <!-- <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/> -->
   </div>
 
   <div class="pl-1rem pr-1rem sticky fc-dark hidden" id="subtitle" style="padding-top: clamp(0.25rem, 1vh, 1rem); flex-shrink: 0;">
@@ -990,6 +1004,16 @@ const resultsData = {
   }
 };
 
+function equalizeAnswerHeights() {
+  const answers = document.querySelectorAll('#radioContainer .answer');
+  if (!answers.length) return;
+  answers.forEach(a => a.style.minHeight = '');
+  const maxH = Math.max(...[...answers].map(a => a.offsetHeight));
+  answers.forEach(a => a.style.minHeight = maxH + 'px');
+}
+
+window.addEventListener('resize', equalizeAnswerHeights);
+
 function renderQuestion(question, layoutType) {
   const label = document.getElementById("questionLabel");
   const container = document.getElementById("radioContainer");
@@ -1007,6 +1031,8 @@ function renderQuestion(question, layoutType) {
     btn.onclick = () => handleAnswer(opt.key, opt.label);
     container.appendChild(btn);
   });
+
+  requestAnimationFrame(equalizeAnswerHeights);
 }
 
 function handleAnswer(key, label) {

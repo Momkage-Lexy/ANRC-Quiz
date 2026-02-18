@@ -14,7 +14,7 @@
   "devDependencies": {
     "electron": "^35.0.0",
     "electron-builder": "^26.0.0",
-    "electron-rebuild": "^3.2.9"
+    "electron-rebuild": "^2.0.3"
   },
   "build": {
     "appId": "edu.oregonstate.anrc-quiz",
