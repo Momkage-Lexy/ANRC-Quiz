@@ -297,6 +297,55 @@ button.nav {
 
 .modal-close:hover { transform: rotate(90deg); }
 
+.modal-back {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #232323;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  font-family: 'Kievit', sans-serif;
+  transition: transform 0.2s ease;
+}
+
+.modal-back:hover { transform: translateX(-4px); }
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.contact-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: 2px solid #d73f09;
+  background: transparent;
+  color: #232323;
+  font-family: 'Kievit', sans-serif;
+  font-size: 1rem;
+  outline: none;
+}
+
+.contact-input:focus { background: rgba(215, 63, 9, 0.05); }
+
+.contact-input::placeholder { color: #b7a99a; }
+
+.contact-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .wrapup {
   text-align: center;
   font-family: 'Kievit', sans-serif;
@@ -731,6 +780,7 @@ html.kiosk-mode img {
       </section>
 
       <section id="coursesSection" class="results-section align-center hidden">
+        <button class="modal-back" id="backArrow" style="position: static; align-self: flex-start;">← Back</button>
         <h2 class="results-title m-0 fw-500 pb-1rem p-1rem text-center fc-dark">
           <i>Courses that would help you develop <span id="path"></span> skills at Oregon State are</i>
         </h2>
@@ -744,12 +794,23 @@ html.kiosk-mode img {
   <!-- WRAP UP MODAL -->
   <div id="wrapupModal" class="modal-overlay">
     <div class="modal-content">
+      <button class="modal-back" id="modalBack">← Back</button>
       <button class="modal-close" id="closeModal">&times;</button>
-      <div class="wrapup">
+      <div class="wrapup" id="wrapupContent">
         <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
         <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
         <p class="wrapup-paragraph">Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
-        <button id="restartButton" class="nav">Restart Quiz</button>
+        <button id="restartButton" class="nav">Next</button>
+      </div>
+      <div id="contactForm" class="contact-form hidden">
+        <h3 class="Stratum2Web fc-dark" style="font-size:1.5rem; margin:0 0 0.5rem;">Want to stay connected?</h3>
+        <p class="Kievit" style="color:#232323; margin:0 0 0.5rem; font-size:0.95rem;">Leave your name and email and we'll send you more information about the ANRC program at Oregon State.</p>
+        <input type="text" id="contactName" class="contact-input" placeholder="Your name" />
+        <input type="email" id="contactEmail" class="contact-input" placeholder="Your email" />
+        <div class="contact-buttons">
+          <button id="submitContact" class="nav">Submit &amp; Restart</button>
+          <button id="skipContact" class="nav" style="background:#b7a99a;">Skip</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1151,6 +1212,11 @@ function showResults(pathKey) {
   };
 
   document.getElementById("arrow2").onclick = openModal;
+
+  document.getElementById("backArrow").onclick = () => {
+    document.getElementById("coursesSection").classList.add("hidden");
+    document.getElementById("careersSection").classList.remove("hidden");
+  };
 }
 
 function openModal() {
@@ -1161,8 +1227,14 @@ function openModal() {
 function closeModal() {
   document.getElementById("wrapupModal").classList.remove("active");
   document.body.style.overflow = "";
+  // Reset modal to initial state so it's clean if reopened
+  document.getElementById("wrapupContent").classList.remove("hidden");
+  document.getElementById("contactForm").classList.add("hidden");
+  document.getElementById("contactName").value = "";
+  document.getElementById("contactEmail").value = "";
 }
 
+document.getElementById("modalBack").onclick = closeModal;
 document.getElementById("closeModal").onclick = closeModal;
 document.getElementById("wrapupModal").onclick = e => {
   if (e.target.id === "wrapupModal") closeModal();
@@ -1188,7 +1260,21 @@ function restartQuiz() {
   renderQuestion(Question1, "intro");
 }
 
-document.getElementById("restartButton").onclick = restartQuiz;
+document.getElementById("restartButton").onclick = () => {
+  document.getElementById("wrapupContent").classList.add("hidden");
+  document.getElementById("contactForm").classList.remove("hidden");
+};
+
+document.getElementById("submitContact").onclick = () => {
+  const name = document.getElementById("contactName").value.trim();
+  const email = document.getElementById("contactEmail").value.trim();
+  if (window.quizAPI && window.quizAPI.saveContact) {
+    window.quizAPI.saveContact({ name, email });
+  }
+  restartQuiz();
+};
+
+document.getElementById("skipContact").onclick = restartQuiz;
 
 /* =====================
    KIOSK MODE
