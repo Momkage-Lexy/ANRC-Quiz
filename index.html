@@ -2,8 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Career Quiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ANRC Career Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- PWA / Kiosk -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#d73f09" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ANRC Quiz" />
+<link rel="apple-touch-icon" href="images/icon-192.png" />
 
 <style>
 *,
@@ -93,18 +101,15 @@ html, body {
 }
 
 @media (max-width: 900px) {
-  .quiz-shell { padding: 1rem; }
+  .quiz-shell { padding: 1rem; align-items: flex-start; }
   .circle-text-logo {
-    position: relative !important;
-    width: 100px !important;
-    top: 0px !important;
-    right: 0px !important;
+    position: relative;
+    right: auto;
+    bottom: auto;
+    height: clamp(32px, 5vh, 56px);
   }
 }
 
-@media (min-width: 900px) and (max-width: 1460px) {
-  .circle-text-logo { width: 130px !important; }
-}
 
 .question-label {
   font-size: clamp(1.4rem, 2.5vw, 2.2rem);
@@ -118,10 +123,20 @@ html, body {
   gap: 1rem;
   grid-template-columns: repeat(3, 1fr);
   padding: 1rem 2rem 2rem 2rem;
+  align-items: stretch;
 }
 
 @media (max-width: 900px) {
   .answers { grid-template-columns: 1fr !important; }
+  [data-layout="intro"] .answers { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+@media (max-width: 700px) {
+  [data-layout="intro"] .answers { grid-template-columns: 1fr !important; }
+  .answers .answer:nth-child(7):last-child { grid-column: auto; }
+  .answers { padding: 0.5rem 1rem 1rem 1rem; gap: 0.5rem; }
+  .first-question { padding: 1rem 1rem 0.25rem 1rem; }
+  .question-label { font-size: clamp(1.1rem, 2vw, 1.6rem); }
 }
 
 .answer {
@@ -134,6 +149,10 @@ html, body {
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .answer:hover {
@@ -277,6 +296,55 @@ button.nav {
 }
 
 .modal-close:hover { transform: rotate(90deg); }
+
+.modal-back {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #232323;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  font-family: 'Kievit', sans-serif;
+  transition: transform 0.2s ease;
+}
+
+.modal-back:hover { transform: translateX(-4px); }
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.contact-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: 2px solid #d73f09;
+  background: transparent;
+  color: #232323;
+  font-family: 'Kievit', sans-serif;
+  font-size: 1rem;
+  outline: none;
+}
+
+.contact-input:focus { background: rgba(215, 63, 9, 0.05); }
+
+.contact-input::placeholder { color: #b7a99a; }
+
+.contact-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 .wrapup {
   text-align: center;
@@ -560,16 +628,19 @@ button.nav {
 .w-50percent   { width: 50% !important; }
 .w-80percent   { width: 80% !important; }
 .text-center   { text-align: center !important; }
-.branding      { border-bottom: 1px solid #d73f09; }
+.branding      { border-bottom: 1px solid #d73f09; overflow: visible; }
 .min-h-50vh    { min-height: 50vh !important; }
 .mw-1200px     { max-width: 1200px !important; }
 .space-between { justify-content: space-between !important; }
 
 .circle-text-logo {
   position: absolute;
-  top: 20px;
-  right: 100px;
-  width: 180px;
+  right: 20px;
+  top: 0px;
+  height: clamp(60px, 9vw, 130px);
+  width: auto;
+  padding: 4px;
+  z-index: 2;
 }
 
 @media (max-width: 1024px) {
@@ -581,6 +652,88 @@ button.nav {
 /* subtitle heading — scales with viewport height so it doesn't crowd the grid */
 #subtitle h1 { font-size: clamp(1rem, 3vh, 3rem); margin: 0; }
 #subtitle h2 { font-size: clamp(1.5rem, 6vh, 5rem); margin: 0; line-height: 0.85; }
+
+/* =====================
+   KIOSK / TABLET MODE
+===================== */
+
+/* Prevent text selection, callouts, and tap highlight */
+html.kiosk-mode {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+html.kiosk-mode body {
+  overscroll-behavior: none;
+}
+
+/* Disable long-press context menu on images */
+html.kiosk-mode img {
+  pointer-events: none;
+}
+
+/* Touch-friendly: active states for buttons (hover doesn't work on touch) */
+@media (pointer: coarse) {
+  .answer:active {
+    background: #d73f09;
+    color: white;
+  }
+  .career-card:active .career-overlay {
+    background: rgba(215, 63, 9, 0.95);
+  }
+  .arrow-button:active {
+    transform: translateY(5px);
+  }
+  /* Larger tap targets on tablet */
+  .answer {
+    padding: 1.2rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  button.nav {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Inactivity overlay */
+#kioskIdleOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(215, 63, 9, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
+}
+
+#kioskIdleOverlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#kioskIdleOverlay .idle-text {
+  color: white;
+  font-family: 'Stratum2Web', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  padding: 2rem;
+}
+
+#kioskIdleOverlay .idle-subtext {
+  color: rgba(255,255,255,0.8);
+  font-family: 'Kievit', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  margin-top: 1rem;
+}
 </style>
 </head>
 
@@ -588,7 +741,7 @@ button.nav {
 <div class="page-card">
 <div style="display:flex; flex-direction:column; height:100%;">
 
-  <div class="branding flex space-between sticky">
+  <div class="branding flex space-between sticky" style="align-items:center;">
     <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
     <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
   </div>
@@ -627,6 +780,7 @@ button.nav {
       </section>
 
       <section id="coursesSection" class="results-section align-center hidden">
+        <button class="modal-back" id="backArrow" style="position: static; align-self: flex-start;">← Back</button>
         <h2 class="results-title m-0 fw-500 pb-1rem p-1rem text-center fc-dark">
           <i>Courses that would help you develop <span id="path"></span> skills at Oregon State are</i>
         </h2>
@@ -640,12 +794,23 @@ button.nav {
   <!-- WRAP UP MODAL -->
   <div id="wrapupModal" class="modal-overlay">
     <div class="modal-content">
+      <button class="modal-back" id="modalBack">← Back</button>
       <button class="modal-close" id="closeModal">&times;</button>
-      <div class="wrapup">
+      <div class="wrapup" id="wrapupContent">
         <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
         <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
         <p class="wrapup-paragraph">Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
-        <button id="restartButton" class="nav">Restart Quiz</button>
+        <button id="restartButton" class="nav">Next</button>
+      </div>
+      <div id="contactForm" class="contact-form hidden">
+        <h3 class="Stratum2Web fc-dark" style="font-size:1.5rem; margin:0 0 0.5rem;">Want to stay connected?</h3>
+        <p class="Kievit" style="color:#232323; margin:0 0 0.5rem; font-size:0.95rem;">Leave your name and email and we'll send you more information about the ANRC program at Oregon State.</p>
+        <input type="text" id="contactName" class="contact-input" placeholder="Your name" />
+        <input type="email" id="contactEmail" class="contact-input" placeholder="Your email" />
+        <div class="contact-buttons">
+          <button id="submitContact" class="nav">Submit</button>
+          <button id="skipContact" class="nav" style="background:#b7a99a;">Skip</button>
+        </div>
       </div>
     </div>
   </div>
@@ -653,11 +818,18 @@ button.nav {
 </div>
 </div>
 
+<!-- Kiosk idle screen -->
+<div id="kioskIdleOverlay">
+  <div class="idle-text">Tap to Start</div>
+  <div class="idle-subtext">Discover your career in Agriculture &amp; Natural Resources Communication</div>
+</div>
+
 <script>
 let currentPath = null;
 let currentIndex = 0;
 const historyStack = [];
 let selectedPathKey = null;
+const answerLog = []; // tracks { question, answer } for each step
 
 const Question1 = {
   label: "When you're working on a project, what part excites you most?",
@@ -893,6 +1065,16 @@ const resultsData = {
   }
 };
 
+function equalizeAnswerHeights() {
+  const answers = document.querySelectorAll('#radioContainer .answer');
+  if (!answers.length) return;
+  answers.forEach(a => a.style.minHeight = '');
+  const maxH = Math.max(...[...answers].map(a => a.offsetHeight));
+  answers.forEach(a => a.style.minHeight = maxH + 'px');
+}
+
+window.addEventListener('resize', equalizeAnswerHeights);
+
 function renderQuestion(question, layoutType) {
   const label = document.getElementById("questionLabel");
   const container = document.getElementById("radioContainer");
@@ -907,15 +1089,18 @@ function renderQuestion(question, layoutType) {
     btn.type = "button";
     btn.className = "answer";
     btn.textContent = opt.label;
-    btn.onclick = () => handleAnswer(opt.key);
+    btn.onclick = () => handleAnswer(opt.key, opt.label);
     container.appendChild(btn);
   });
+
+  requestAnimationFrame(equalizeAnswerHeights);
 }
 
-function handleAnswer(key) {
-  historyStack.push({ currentPath, currentIndex });
+function handleAnswer(key, label) {
+  historyStack.push({ currentPath, currentIndex, answerLogLength: answerLog.length });
 
   if (!currentPath) {
+    answerLog.push(label);
     selectedPathKey = key;
     currentPath = paths[key];
     currentIndex = 0;
@@ -925,6 +1110,7 @@ function handleAnswer(key) {
     return;
   }
 
+  answerLog.push(label);
   currentIndex++;
 
   if (currentIndex < currentPath.length) {
@@ -940,6 +1126,7 @@ document.getElementById("backButton").onclick = () => {
 
   currentPath = prev.currentPath;
   currentIndex = prev.currentIndex;
+  answerLog.length = prev.answerLogLength;
 
   if (!currentPath) {
     document.getElementById("backButton").classList.add("hidden");
@@ -955,6 +1142,16 @@ renderQuestion(Question1, "intro");
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
+
+  // Save response to database (Electron only)
+  if (window.quizAPI && window.quizAPI.saveResponse) {
+    window.quizAPI.saveResponse({
+      question1: answerLog[0] || '',
+      question2: answerLog[1] || '',
+      question3: answerLog[2] || '',
+      path: data.careerGroup
+    });
+  }
 
   document.getElementById("path-title").textContent = data.careerGroup;
   document.getElementById("path").textContent = data.career;
@@ -1015,6 +1212,11 @@ function showResults(pathKey) {
   };
 
   document.getElementById("arrow2").onclick = openModal;
+
+  document.getElementById("backArrow").onclick = () => {
+    document.getElementById("coursesSection").classList.add("hidden");
+    document.getElementById("careersSection").classList.remove("hidden");
+  };
 }
 
 function openModal() {
@@ -1025,20 +1227,27 @@ function openModal() {
 function closeModal() {
   document.getElementById("wrapupModal").classList.remove("active");
   document.body.style.overflow = "";
+  // Reset modal to initial state so it's clean if reopened
+  document.getElementById("wrapupContent").classList.remove("hidden");
+  document.getElementById("contactForm").classList.add("hidden");
+  document.getElementById("contactName").value = "";
+  document.getElementById("contactEmail").value = "";
 }
 
+document.getElementById("modalBack").onclick = closeModal;
 document.getElementById("closeModal").onclick = closeModal;
 document.getElementById("wrapupModal").onclick = e => {
   if (e.target.id === "wrapupModal") closeModal();
 };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
-document.getElementById("restartButton").onclick = () => {
+function restartQuiz() {
   closeModal();
   currentPath = null;
   currentIndex = 0;
   historyStack.length = 0;
   selectedPathKey = null;
+  answerLog.length = 0;
 
   document.getElementById("results").classList.add("hidden");
   document.querySelector(".quiz-shell").classList.remove("hidden");
@@ -1049,7 +1258,98 @@ document.getElementById("restartButton").onclick = () => {
   document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
 
   renderQuestion(Question1, "intro");
+}
+
+document.getElementById("restartButton").onclick = () => {
+  document.getElementById("wrapupContent").classList.add("hidden");
+  document.getElementById("contactForm").classList.remove("hidden");
 };
+
+document.getElementById("submitContact").onclick = () => {
+  const name = document.getElementById("contactName").value.trim();
+  const email = document.getElementById("contactEmail").value.trim();
+  if (window.quizAPI && window.quizAPI.saveContact) {
+    window.quizAPI.saveContact({ name, email });
+  }
+  restartQuiz();
+};
+
+document.getElementById("skipContact").onclick = restartQuiz;
+
+/* =====================
+   KIOSK MODE
+===================== */
+(function initKiosk() {
+  const IDLE_TIMEOUT = 90000; // 90 seconds of inactivity
+  const isElectron = navigator.userAgent.toLowerCase().includes('electron');
+
+  // Only apply kiosk layout overrides inside Electron
+  if (isElectron) {
+    document.documentElement.classList.add('kiosk-mode');
+  }
+
+  // Prevent pinch-to-zoom and double-tap zoom
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  // Disable context menu (long-press)
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // --- Inactivity auto-reset ---
+  const idleOverlay = document.getElementById('kioskIdleOverlay');
+  let idleTimer = null;
+
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    if (idleOverlay.classList.contains('active')) {
+      idleOverlay.classList.remove('active');
+    }
+    idleTimer = setTimeout(onIdle, IDLE_TIMEOUT);
+  }
+
+  function onIdle() {
+    // Only show idle screen if not on the first question
+    if (currentPath !== null || document.getElementById("wrapupModal").classList.contains("active")) {
+      restartQuiz();
+      idleOverlay.classList.add('active');
+    }
+  }
+
+  // Tap idle overlay to dismiss and start fresh
+  idleOverlay.addEventListener('click', () => {
+    idleOverlay.classList.remove('active');
+    resetIdleTimer();
+  });
+
+  // Track all user interactions to reset idle timer
+  ['touchstart', 'click', 'scroll', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
+
+  // Start idle timer
+  resetIdleTimer();
+
+  // --- Wake Lock (prevent screen dimming) ---
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        await navigator.wakeLock.request('screen');
+      } catch (_) {
+        // Wake lock request failed (e.g., low battery)
+      }
+    }
+  }
+  requestWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') requestWakeLock();
+  });
+
+  // --- Service Worker registration (browser only, not needed in Electron) ---
+  if (!isElectron && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+})();
 </script>
 </body>
 </html>

@@ -15,6 +15,7 @@ C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\farm-
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\hangout.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\idea.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\journalist.jpg
+C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\logo-dark.png
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\logo.png
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\marketing.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\people-meeting.jpg
@@ -30,6 +31,7 @@ C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\speci
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\strategist.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\talking.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\teaching.jpg
+C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\Untitled-1.png
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\video-call.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\walkie-talkie.jpg
 C:\Users\lexyb\ANRC-Quiz\anrc-quiz\bin\Debug\net8.0-windows\wwwroot\images\writer.jpg
