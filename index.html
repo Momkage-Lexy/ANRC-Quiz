@@ -243,6 +243,10 @@ button.nav {
   padding: 1rem 1.25rem;
   border-radius: 999px;
   border: 2px solid #d73f09;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* =====================
@@ -308,7 +312,6 @@ button.nav {
   cursor: pointer;
   padding: 0.5rem;
   line-height: 1;
-  font-family: 'Kievit', sans-serif;
   transition: transform 0.2s ease;
 }
 
@@ -430,16 +433,27 @@ button.nav {
   padding: 0.5rem;
   line-height: 1.2;
   opacity: 1;
-  transition: opacity 0.4s ease, background 0.3s ease;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
 }
 
 .career-card:hover .career-overlay {
   background: rgba(215, 63, 9, 0.95);
 }
 
-.career-overlay.hidden {
-  opacity: 0;
+/* Used for cycling animation — fades smoothly instead of display:none */
+.career-overlay.overlay-peek {
+  opacity: 0.08;
   pointer-events: none;
+}
+
+/* Fade-in for the whole grid on first appearance */
+@keyframes careerGridIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.career-grid.fade-in {
+  animation: careerGridIn 0.9s ease both;
 }
 
 /* =====================
@@ -1188,18 +1202,21 @@ function showResults(pathKey) {
     overlays.push(overlay);
   });
 
-  // Cycle overlays: briefly hide one at a time so images peek through
+  // Fade-in the grid on first appearance
+  careerGrid.classList.add('fade-in');
+
+  // Cycle overlays: gently fade one at a time so images peek through
   let cycleIdx = 0;
   function cycleOverlays() {
     const overlay = overlays[cycleIdx];
-    overlay.classList.add("hidden");
+    overlay.classList.add("overlay-peek");
     setTimeout(() => {
-      overlay.classList.remove("hidden");
+      overlay.classList.remove("overlay-peek");
       cycleIdx = (cycleIdx + 1) % overlays.length;
-      setTimeout(cycleOverlays, 600 + Math.random() * 600);
-    }, 1200 + Math.random() * 600);
+      setTimeout(cycleOverlays, 1000 + Math.random() * 800);
+    }, 1800 + Math.random() * 800);
   }
-  setTimeout(cycleOverlays, 800);
+  setTimeout(cycleOverlays, 1200);
 
   data.courses.forEach(course => {
     const li = document.createElement("li");
