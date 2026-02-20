@@ -1,0 +1,25 @@
+{
+  "name": "ANRC Career Quiz",
+  "short_name": "ANRC Quiz",
+  "description": "Agriculture & Natural Resources Communication career quiz for Oregon State University",
+  "start_url": "/ANRC-Quiz/index.html",
+  "scope": "/ANRC-Quiz/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#d73f09",
+  "theme_color": "#d73f09",
+  "icons": [
+    {
+      "src": "images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Career Quiz</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ANRC Career Quiz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<!-- PWA / Kiosk -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#d73f09" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ANRC Quiz" />
+<link rel="apple-touch-icon" href="images/icon-192.png" />
 
 <style>
-/* =====================
-   RESET / BASE
-===================== */
 *,
 *::before,
 *::after {
@@ -18,27 +23,38 @@
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background: #ffeedc26;
-  height: 100%;
-  max-height: 100vh;
+  overflow: hidden;
+  background: #d73f09;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* =====================
-   FONTS
-===================== */
-@font-face {
-  font-family: 'Stratum2Web';
-  src: url('assets/Stratum2-Medium.otf');
+.page-card {
+  background: #fef7f1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 80%;
+  margin: 0 auto;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
 }
-@font-face {
-  font-family: 'StratumLite';
-  src: url('assets/Stratum2-Light.otf');
+
+@media (max-width: 600px) {
+  html, body { padding: 0.75rem; }
+  .page-card {
+    border-radius: 10px;
+    height: calc(100vh - 1.5rem);
+  }
 }
-@font-face {
-  font-family: 'Kievit';
-  src: url('assets/KievitOffc-Medi.ttf');
-}
+
+@font-face { font-family: 'Stratum2Web'; src: url('assets/Stratum2-Medium.otf'); }
+@font-face { font-family: 'StratumLite'; src: url('assets/Stratum2-Light.otf'); }
+@font-face { font-family: 'Kievit'; src: url('assets/KievitOffc-Medi.ttf'); }
 
 .Stratum2Web { font-family: 'Stratum2Web', sans-serif; }
 .StratumLite { font-family: 'StratumLite', sans-serif; }
@@ -51,8 +67,8 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  height: 70%;
+  flex: 1;
+  min-height: 0;
 }
 
 .quiz-card {
@@ -60,94 +76,62 @@ html, body {
   max-width: 1200px;
 }
 
-/* =====================
-   QUESTION LAYOUT
-===================== */
 .question-layout {
   display: grid;
   gap: 2rem;
+  grid-template-columns: 1fr !important;
 }
 
-/* FIRST QUESTION (2-column, label left) */
-.question-layout[data-layout="intro"] {
-  grid-template-columns: 1fr 2fr;
-  align-items: center;
-}
-
-.first-question{
-    height: 500px;
-    border-right: 1px solid #d73f09;
-    display: flex;
-    align-items: center;
-    padding-right: 1rem !important;
-}
-
-/* PATH QUESTIONS (label top, 3-column answers) */
-.question-layout[data-layout="path"] {
-  grid-template-columns: 1fr;
-}
-
-.question-layout[data-layout="path"] .first-question{
-    height: auto;
-    border-right: 1px solid #d7400900;
-    display: block;
-    align-items: center;
-}
-/* MOBILE: all stack */
 @media (max-width: 900px) {
-  .question-layout {
-    grid-template-columns: 1fr !important;
-  }
+  .question-layout { gap: 0; }
+}
 
-  .first-question{
-    height: auto !important;
-    border-right: 1px solid #d7400900 !important;
-    justify-content: center !important;
+.first-question {
+  position: relative;
+  display: block;
+  background-image: none !important;
+  border: none;
+  padding: 2rem 2rem 0.5rem 2rem;
+}
+
+.first-question::before { display: none; }
+
+.answers .answer:nth-child(7):last-child {
+  grid-column: 2;
+}
+
+@media (max-width: 900px) {
+  .quiz-shell { padding: 1rem; }
+  .circle-text-logo {
+    position: relative !important;
+    width: 100px !important;
+    top: 0px !important;
+    right: 0px !important;
   }
 }
 
-/* =====================
-   LABEL
-===================== */
+@media (min-width: 900px) and (max-width: 1460px) {
+  .circle-text-logo { width: 130px !important; }
+}
+
 .question-label {
-  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem);
   color: #d73f09;
   line-height: 1.3;
-}
-
-/* Center label when stacked */
-.question-layout[data-layout="path"] .question-label {
   text-align: center;
 }
 
-/* =====================
-   ANSWERS
-===================== */
 .answers {
   display: grid;
   gap: 1rem;
-}
-
-/* 2 columns for first question */
-.question-layout[data-layout="intro"] .answers {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-/* 3 columns for path questions */
-.question-layout[data-layout="path"] .answers {
   grid-template-columns: repeat(3, 1fr);
+  padding: 1rem 2rem 2rem 2rem;
 }
 
-/* Mobile: always 1 column */
 @media (max-width: 900px) {
-  .answers {
-    grid-template-columns: 1fr !important;
-  }
+  .answers { grid-template-columns: 1fr !important; }
 }
 
-/* =====================
-   ANSWER BUTTON
-===================== */
 .answer {
   padding: 1rem 1.25rem;
   border-radius: 999px;
@@ -165,9 +149,6 @@ html, body {
   color: white;
 }
 
-/* =====================
-   NAV
-===================== */
 .nav-row {
   margin-top: 2rem;
   display: flex;
@@ -187,148 +168,173 @@ button.nav {
   margin-top: 0;
 }
 
-.hidden {
-  display: none !important;
-}
+.hidden { display: none !important; }
 
 /* =====================
    RESULTS
 ===================== */
-.results-shell {
-  margin: 0 auto;
+
+/* results fills the remaining height of the page-card flex column */
+#results {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+}
+
+#results.hidden {
+  display: none !important;
+}
+
+.results-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .results-title {
-  text-align: left;
-  margin-bottom: 2rem;
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  text-align: center;
+  margin: 0;
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+  flex-shrink: 0;
 }
 
+/* each section fills the shell */
 .results-section {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-/* =====================
-   COURSES
-===================== */
-.course-list {
-  list-style: none;
-  padding: 0;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
+  padding: clamp(0.5rem, 1.5vh, 1.5rem) 2rem clamp(0.25rem, 1vh, 0.75rem) 2rem;
+}
+
+.course-list {
+  list-style: none;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  margin-top: 70px;
-  width: 80%;
+  margin-top: 1.5rem;
+  width: 90%;
+}
+
+@media (max-width: 900px){
+  .course-list{
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .course-list li {
   color: #d73f09;
-  padding: 1.25rem 1.5rem;
+  font-family: 'Kievit', sans-serif;
+  padding: 1rem 1.25rem;
   border-radius: 999px;
   border: 2px solid #d73f09;
-  font-family: 'Kievit', sans-serif;
 }
 
 /* =====================
-   WRAP UP
+   MODAL
 ===================== */
-.wrapup {
-    text-align: center;
-    font-family: 'Kievit', sans-serif;
-    font-size: 1.2rem;
-    line-height: 1.7;
-    color: #d73f09;
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-top: 100px;
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
-.wrapup-paragraph {
-    margin-bottom: 2rem;
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: #fef7f1;
+  padding: 3rem;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.active .modal-content { transform: scale(1); }
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #232323;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.modal-close:hover { transform: rotate(90deg); }
+
+.wrapup {
+  text-align: center;
+  font-family: 'Kievit', sans-serif;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #232323;
+}
+
+.wrapup-paragraph { margin-bottom: 2rem; }
+
+@media (max-width: 768px) {
+  .modal-content { padding: 2rem; width: 95%; }
+  .wrapup { font-size: 1rem; }
 }
 
 .arrow-button {
-    background: none;
-    border: none;
-    color: #d73f09;
-    font-size: 3rem;
-    cursor: pointer;
-    padding: 2rem;
-    margin-top: 2rem;
-    transition: transform 0.3s ease;
-    z-index: 10;
+  background: none;
+  border: none;
+  color: #d73f09;
+  font-size: clamp(1.2rem, 3vh, 2rem);
+  cursor: pointer;
+  padding: 0.25rem 1rem;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+  z-index: 10;
 }
 
-.arrow-button:hover {
-    transform: translateY(5px);
-}
+.arrow-button:hover { transform: translateY(5px); }
+
 /* =====================
-   CAREER GRID (PACKED GRID)
+   CAREER GRID
 ===================== */
 .career-grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  gap: 0.5rem;
-  height: 600px;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  padding: 0 1rem;
+  gap: 6px;
+  /* grow to fill remaining space in the flex section */
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 0.5rem 0;
   box-sizing: border-box;
-  margin-top: 50px;
 }
 
-@media (max-width: 914px) {
-  .pt-100px {
-    padding-top: 0px !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .career-grid {
- /*   grid-template-columns: repeat(4, 1fr);*/
-  /*  grid-template-rows: repeat(8, 1fr);*/
-    height: 500px;
-  }
-
-  .career-overlay {
-    font-size: 1rem !important;
-  }
-
-  .fs-3rem{
-    font-size: 2rem !important;
-  }
-
-  .fs-5rem{
-    font-size: 4rem !important;
-  }
-
-  .anrc-title{
-    font-size: 0.7rem !important;
-  }
-}
-
+/* Mobile: single column */
 @media (max-width: 500px) {
   .career-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    height: auto;
-  }
-
-  .career-overlay{
-    font-size: 2rem !important;
-  }
-
-  .fs-3rem{
-    font-size: 1rem !important;
-  }
-
-  .fs-5rem{
-    font-size: 3rem !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    min-height: 300px;
   }
 }
 
@@ -340,874 +346,650 @@ button.nav {
   overflow: hidden;
   background-image: var(--bg);
   background-size: cover;
-  background-position: top;
+  background-position: center;
   cursor: pointer;
-  border-radius: 0;
+  border-radius: 4px;
+  /* smooth image zoom on hover */
+  transition: transform 0.3s ease;
 }
 
 /* =====================
-   ORANGE OVERLAY
+   OVERLAY
+   — always visible, darkens on hover
 ===================== */
 .career-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(215, 63, 9, 0.88);
+  background: rgba(215, 63, 9, 0.82);
   color: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-
   font-family: 'Stratum2Web', sans-serif;
-  font-size: 2rem;
-  padding: 1.5rem;
-
+  font-size: clamp(0.8rem, 2.8vh, 2rem);
+  padding: 0.5rem;
+  line-height: 1.2;
   opacity: 1;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.4s ease, background 0.3s ease;
 }
 
-@media (max-width: 1024px) {
-  .career-overlay {
-    font-size: 1.5rem;
-  }
-
-  .career-grid.grid-large .career-card:nth-child(3){
-    margin-top: 0px !important;
-  }
-
-  .career-grid.grid-small .career-card:nth-child(3){
-    margin-top: 0px !important;
-  }
-
-  .career-grid.grid-med .career-card:nth-child(3) {
-    margin-top: 0px !important;
-  }
-
-  .career-grid.grid-small .career-card:nth-child(5){
-    margin-bottom: 0px !important;
-  }
-
-  .career-grid.grid-large .career-card:nth-child(6){
-    margin-bottom: 0px !important;
-  }
-
-  .mw-50percent{
-    max-width: 100% !important;
-  }
-
-  .arrow-button{
-    margin-top: 0px !important;
-  }
-
-  .career-grid{
-    margin-top: 0px !important;
-  }
-
-  .course-list{
-    margin-top: 0px !important;
-  }
-}   
-
-@media (min-width: 500px) and (max-width: 1024px) {
-  .career-grid{
-    height: 500px !important;
-  }
+.career-card:hover .career-overlay {
+  background: rgba(215, 63, 9, 0.95);
 }
 
-/* Hover + focus */
-.career-card:hover .career-overlay,
-.career-card:focus-within .career-overlay {
-  opacity: 1;
-}
-
-/* Hidden state (JS toggles this) */
 .career-overlay.hidden {
   opacity: 0;
   pointer-events: none;
 }
 
 /* =====================
-   CARD LAYOUTS - 5 CARDS
+   LAYOUT: 5 CARDS  (grid-small)
+   4-col × 4-row implicit grid
+   
+   [  1  ][  1  ][  2  ][  3  ]
+   [  1  ][  1  ][  2  ][  3  ]
+   [  5  ][  5  ][  2  ][  4  ]
+   [  5  ][  5  ][  2  ][  4  ]
 ===================== */
+.career-grid.grid-small {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
 .career-grid.grid-small .career-card:nth-child(1) {
-  grid-column: 1 / 4;
+  grid-column: 1 / 3;
   grid-row: 1 / 3;
 }
-
 .career-grid.grid-small .career-card:nth-child(2) {
-  grid-column: 4 / 6;
-  grid-row: 1 / -1;
+  grid-column: 3 / 4;
+  grid-row: 1 / 5;
 }
-
 .career-grid.grid-small .career-card:nth-child(3) {
-    margin-top:-100px;
-  grid-column: 6 / 9;
-  grid-row: 1 / 4;
+  grid-column: 4 / 5;
+  grid-row: 1 / 3;
 }
-
 .career-grid.grid-small .career-card:nth-child(4) {
-  grid-column: 6 / 9;
-  grid-row: 4 / 7;
+  grid-column: 4 / 5;
+  grid-row: 3 / 5;
 }
-
 .career-grid.grid-small .career-card:nth-child(5) {
-  grid-column: 1 / 4;
-  grid-row: 3 / 7;
-  margin-bottom: -100px;
-}
-
-.career-grid.grid-small .career-card:nth-child(6) {
-  grid-column: 6 / 9;
-  grid-row: 4 / 7;
-}
-
-/* =====================
-   CARD LAYOUTS - 6 CARDS
-===================== */
-.career-grid.grid-med .career-card:nth-child(1) {
   grid-column: 1 / 3;
-  grid-row: 1 / 5;
-}
-
-.career-grid.grid-med .career-card:nth-child(2) {
-  grid-column: 3 / 5;
-  grid-row: 1 / 5;
-}
-
-.career-grid.grid-med .career-card:nth-child(3) {
-  grid-column: 6 / 9;
-  grid-row: 1 / 4;
-  margin-top: -100px;
-}
-
-.career-grid.grid-med .career-card:nth-child(4) {
-  grid-column: 5 / 6;
-  grid-row: 1 / 7;
-}
-
-.career-grid.grid-med .career-card:nth-child(5) {
-  grid-column: 6 / 9;
-  grid-row: 4 / 7;
-}
-
-.career-grid.grid-med .career-card:nth-child(6) {
-  grid-column: 1 / 5;
-  grid-row: 5 / 7;
-}
-
-
-
-/* =====================
-   CARD LAYOUTS - 9 CARDS
-===================== */
-.career-grid.grid-large .career-card:nth-child(1) {
-  grid-column: 1 / 3;
-  grid-row: 1 / 3;
-}
-
-.career-grid.grid-large .career-card:nth-child(2) {
-  grid-column: 5 / 7;
-  grid-row: 1 / 5;
-}
-
-.career-grid.grid-large .career-card:nth-child(3) {
-  grid-column: 7 / 9;
-  grid-row: 1 / 3;
-  margin-top: -100px;
-}
-
-.career-grid.grid-large .career-card:nth-child(4) {
-  grid-column: 3 / 5;
-  grid-row: 1 / 4;
-}
-
-.career-grid.grid-large .career-card:nth-child(5) {
-  grid-column: 7 / 9;
   grid-row: 3 / 5;
 }
 
-.career-grid.grid-large .career-card:nth-child(6) {
-  grid-column: 1 / 3;
-  grid-row: 3 / 7;
-  margin-bottom: -100px;
+/* =====================
+   LAYOUT: 6 CARDS  (grid-med)
+
+   [  1  ][  1  ][  3  ][  3  ][  5  ][  6  ]
+   [  1  ][  1  ][  3  ][  3  ][  5  ][  6  ]
+   [  2  ][  2  ][  4  ][  4  ][  5  ][  6  ]
+   [  2  ][  2  ][  4  ][  4  ][  5  ][  6  ]
+===================== */
+.career-grid.grid-med {
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(4, 1fr);
 }
 
-.career-grid.grid-large .career-card:nth-child(7) {
+.career-grid.grid-med .career-card:nth-child(1) {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+.career-grid.grid-med .career-card:nth-child(2) {
+  grid-column: 1 / 3;
+  grid-row: 3 / 5;
+}
+.career-grid.grid-med .career-card:nth-child(3) {
   grid-column: 3 / 5;
+  grid-row: 1 / 3;
+}
+.career-grid.grid-med .career-card:nth-child(4) {
+  grid-column: 3 / 5;
+  grid-row: 3 / 5;
+}
+.career-grid.grid-med .career-card:nth-child(5) {
+  grid-column: 5 / 6;
+  grid-row: 1 / 5;
+}
+.career-grid.grid-med .career-card:nth-child(6) {
+  grid-column: 6 / 7;
+  grid-row: 1 / 5;
+}
+
+/* =====================
+   LAYOUT: 9 CARDS  (grid-large)
+   6-col × 6-row
+   
+   [  1  ][  2  ][  2  ][  3  ][  4  ][  4  ]
+   [  1  ][  2  ][  2  ][  3  ][  4  ][  4  ]
+   [  5  ][  5  ][  6  ][  6  ][  4  ][  4  ]
+   [  5  ][  5  ][  6  ][  6  ][  7  ][  7  ]
+   [  8  ][  8  ][  8  ][  9  ][  7  ][  7  ]
+   [  8  ][  8  ][  8  ][  9  ][  7  ][  7  ]
+===================== */
+.career-grid.grid-large {
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+}
+
+.career-grid.grid-large .career-card:nth-child(1) {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+.career-grid.grid-large .career-card:nth-child(2) {
+  grid-column: 2 / 4;
+  grid-row: 1 / 3;
+}
+.career-grid.grid-large .career-card:nth-child(3) {
+  grid-column: 4 / 5;
+  grid-row: 1 / 3;
+}
+.career-grid.grid-large .career-card:nth-child(4) {
+  grid-column: 5 / 7;
+  grid-row: 1 / 4;
+}
+.career-grid.grid-large .career-card:nth-child(5) {
+  grid-column: 1 / 3;
+  grid-row: 3 / 5;
+}
+.career-grid.grid-large .career-card:nth-child(6) {
+  grid-column: 3 / 5;
+  grid-row: 3 / 5;
+}
+.career-grid.grid-large .career-card:nth-child(7) {
+  grid-column: 5 / 7;
   grid-row: 4 / 7;
 }
-
 .career-grid.grid-large .career-card:nth-child(8) {
-  grid-column: 5 / 8;
+  grid-column: 1 / 4;
   grid-row: 5 / 7;
 }
-
 .career-grid.grid-large .career-card:nth-child(9) {
-  grid-column: 8 / 9;
+  grid-column: 4 / 5;
   grid-row: 5 / 7;
 }
 
-/* Mobile: reset */
+/* Mobile: stack all cards */
 @media (max-width: 500px) {
   .career-card {
     grid-column: 1 / -1 !important;
     grid-row: auto !important;
-    height: 200px;
+    height: 160px;
   }
 }
 
-.m-auto{
-    margin: auto !important;
+/* Tablet: slightly smaller text in overlays */
+@media (max-width: 768px) {
+  .career-overlay {
+    font-size: clamp(0.75rem, 2.4vh, 1.5rem);
+    padding: 0.5rem;
+  }
+  .career-grid {
+    gap: 4px;
+  }
+  .fs-3rem { font-size: 2rem !important; }
+  .fs-5rem { font-size: 4rem !important; }
 }
 
-.p-1rem{
-    padding:1rem !important;
+/* =====================
+   UTILITY CLASSES
+===================== */
+.m-auto    { margin: auto !important; }
+.p-1rem    { padding: 1rem !important; }
+.p-5px     { padding: 5px !important; }
+.pt-1rem   { padding-top: 1rem !important; }
+.pb-1rem   { padding-bottom: 1rem !important; }
+.pl-1rem   { padding-left: 1rem !important; }
+.pr-1rem   { padding-right: 1rem !important; }
+.m-0       { margin: 0 !important; }
+.uppercase { text-transform: uppercase !important; }
+.fw-100    { font-weight: 100; }
+.fw-500    { font-weight: 500; }
+.fw-800    { font-weight: 800; }
+.fs-2rem   { font-size: 2rem; }
+.fs-3rem   { font-size: 3rem; }
+.fs-5rem   { font-size: 5rem; }
+.lh-08     { line-height: 0.8; }
+.sticky    { position: sticky !important; }
+.h-50      { height: 50px !important; }
+.bg-till       { background-color: #b7a99a !important; }
+.bg-highdesert { background-color: #7a6855 !important; }
+.bg-orange     { background-color: #d73f09 !important; }
+.bg-dark       { background-color: #232323 !important; }
+.logo-img      { height: clamp(48px, 8vh, 80px); padding: 8px; }
+.fc-highdesert { color: #7a6855 !important; }
+.fc-till       { color: #b7a99a !important; }
+.fc-white      { color: #ffffff !important; }
+.fc-dark       { color: #232323 !important; }
+.flex          { display: flex !important; gap: 1rem !important; }
+.align-center  { align-items: center !important; }
+.justify-center { justify-content: center !important; }
+.mw-50percent  { max-width: 50%; }
+.w-50percent   { width: 50% !important; }
+.w-80percent   { width: 80% !important; }
+.text-center   { text-align: center !important; }
+.branding      { border-bottom: 1px solid #d73f09; }
+.min-h-50vh    { min-height: 50vh !important; }
+.mw-1200px     { max-width: 1200px !important; }
+.space-between { justify-content: space-between !important; }
+
+.circle-text-logo {
+  position: absolute;
+  top: 20px;
+  right: 100px;
+  width: 180px;
 }
 
-.p-5px{
-    padding:5px !important;
+@media (max-width: 1024px) {
+  .mw-50percent { max-width: 100% !important; }
+  .arrow-button { margin-top: 0px !important; }
+  .course-list  { margin-top: 0px !important; }
 }
 
-.pt-1rem{
-    padding-top:1rem !important;
+/* subtitle heading — scales with viewport height so it doesn't crowd the grid */
+#subtitle h1 { font-size: clamp(1rem, 3vh, 3rem); margin: 0; }
+#subtitle h2 { font-size: clamp(1.5rem, 6vh, 5rem); margin: 0; line-height: 0.85; }
+
+/* =====================
+   KIOSK / TABLET MODE
+===================== */
+
+/* Prevent text selection, callouts, and tap highlight */
+html.kiosk-mode {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
-.pt-100px{
-    padding-top:100px;
+html.kiosk-mode body {
+  overscroll-behavior: none;
 }
 
-.pb-1rem{
-    padding-bottom:1rem !important;
+/* Disable long-press context menu on images */
+html.kiosk-mode img {
+  pointer-events: none;
 }
 
-.pl-1rem{
-    padding-left:1rem !important;
+/* Touch-friendly: active states for buttons (hover doesn't work on touch) */
+@media (pointer: coarse) {
+  .answer:active {
+    background: #d73f09;
+    color: white;
+  }
+  .career-card:active .career-overlay {
+    background: rgba(215, 63, 9, 0.95);
+  }
+  .arrow-button:active {
+    transform: translateY(5px);
+  }
+  /* Larger tap targets on tablet */
+  .answer {
+    padding: 1.2rem 1.5rem;
+    font-size: 1.1rem;
+  }
+  button.nav {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+  }
 }
 
-.pr-1rem{
-    padding-right:1rem !important;
+/* Inactivity overlay */
+#kioskIdleOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(215, 63, 9, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  cursor: pointer;
 }
 
-.m-0{
-    margin:0 !important;
+#kioskIdleOverlay.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
-.uppercase{
-    text-transform: uppercase !important;
+#kioskIdleOverlay .idle-text {
+  color: white;
+  font-family: 'Stratum2Web', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+  padding: 2rem;
 }
 
-.fw-100{
-    font-weight: 100;
-}
-
-.fw-500{
-    font-weight: 500;
-}
-
-.fw-800{
-    font-weight: 800;
-}
-
-.fs-2rem{
-    font-size: 2rem;
-}
-
-.fs-3rem{
-    font-size: 3rem;
-}
-
-.fs-5rem{
-    font-size: 5rem;
-}
-
-.lh-08{
-    line-height: 0.8;
-}
-
-.sticky{
-    position: sticky !important;
-}
-
-.h-50{
-    height: 50px !important;
-}
-
-.bg-till{
-    background-color: #b7a99a !important;
-}
-
-.bg-highdesert{
-    background-color: #7a6855 !important;
-}
-
-.bg-orange{
-    background-color: #d73f09 !important;
-}
-
-.bg-dark{
-    background-color: #232323 !important;
-}
-
-.logo-img{
-    height: 80px;
-    padding: 5px;
-}
-
-.fc-highdesert{
-    color:#7a6855 !important;
-}
-
-.fc-till{
-    color:#b7a99a !important;
-}
-
-.fc-white{
-    color:#ffffff !important;
-}
-
-.fc-dark{
-    color:#232323 !important;
-}
-
-.flex{
-    display: flex !important;
-    gap: 1rem !important;
-}
-
-.align-center{
-    align-items: center !important;
-}
-
-.justify-center{
-    justify-content: center !important;
-}
-
-.mw-50percent{
-    max-width: 50%;
-}
-
-.w-50percent{
-    width: 50% !important;
-}
-
-.w-80percent{
-    width: 80% !important;
-}
-
-.text-center{
-    text-align: center !important;
+#kioskIdleOverlay .idle-subtext {
+  color: rgba(255,255,255,0.8);
+  font-family: 'Kievit', sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  margin-top: 1rem;
 }
 </style>
 </head>
 
 <body>
+<div class="page-card">
+<div style="display:flex; flex-direction:column; height:100%;">
 
-    <div class="branding bg-orange">
-        <img src="images/logo.png" alt="OSU Logo" class="logo-img"/>
-    </div>
-    <div class="bg-dark flex align-center justify-center">
-        <h2 class="StratumLite m-0 fc-white p-5px anrc-title">What Kind of Agricultural & Natural Resources Communicator Are You?</h2>
-    </div>
-    <div class="pt-1rem pl-1rem pr-1rem sticky fc-dark hidden" id="subtitle">
-        <h1 class="StratumLite m-0 fw-100 fs-3rem">Agriculture & Natural Resources</h1>
-        <h2 class="Stratum2Web m-0 fw-800 fs-5rem uppercase lh-08" id="path-title"></h2>
-    </div>
+  <div class="branding flex space-between sticky">
+    <img src="images/logo-dark.png" alt="OSU Logo" class="logo-img"/>
+    <img src="images/Untitled-1.png" alt="Agriculture and Natural Resources Communication" class="circle-text-logo"/>
+  </div>
 
+  <div class="pl-1rem pr-1rem sticky fc-dark hidden" id="subtitle" style="padding-top: clamp(0.25rem, 1vh, 1rem); flex-shrink: 0;">
+    <h1 class="StratumLite m-0 fw-100 fs-3rem">Agriculture & Natural Resources</h1>
+    <h2 class="Stratum2Web m-0 fw-800 fs-5rem uppercase lh-08" id="path-title"></h2>
+  </div>
 
-    <div class="quiz-shell">
+  <div class="quiz-shell">
     <div class="quiz-card">
-
-        <form id="questionForm">
-
-        <div
-            id="questionLayout"
-            class="question-layout"
-            data-layout="intro"
-        >
-            <div class="first-question"><div class="question-label Stratum2Web" id="questionLabel"></div></div>
-            <div class="answers" id="radioContainer"></div>
+      <form id="questionForm">
+        <div id="questionLayout" class="question-layout" data-layout="intro">
+          <div class="first-question" id="firstQuestion">
+            <div class="question-label Stratum2Web" id="questionLabel"></div>
+          </div>
+          <div class="answers" id="radioContainer"></div>
         </div>
-
         <div class="nav-row">
-            <button type="button" id="backButton" class="nav hidden">Back</button>
+          <button type="button" id="backButton" class="nav hidden">Back</button>
         </div>
+      </form>
+    </div>
+  </div>
 
-        </form>
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <div class="results-shell">
+
+      <section id="careersSection" class="results-section">
+        <h2 class="results-title m-0 fw-500 pb-1rem mw-50percent text-center fc-dark">
+          <i>Careers you'd thrive in</i>
+        </h2>
+        <div id="careerGrid" class="career-grid"></div>
+        <button class="arrow-button" id="arrow1">↓</button>
+      </section>
+
+      <section id="coursesSection" class="results-section align-center hidden">
+        <h2 class="results-title m-0 fw-500 pb-1rem p-1rem text-center fc-dark">
+          <i>Courses that would help you develop <span id="path"></span> skills at Oregon State are</i>
+        </h2>
+        <div class="flex justify-center align-center"><ul id="courseList" class="course-list"></ul></div>
+        <button class="arrow-button" id="arrow2">↓</button>
+      </section>
 
     </div>
+  </section>
+
+  <!-- WRAP UP MODAL -->
+  <div id="wrapupModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">&times;</button>
+      <div class="wrapup">
+        <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
+        <p class="wrapup-paragraph">Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
+        <p class="wrapup-paragraph">Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
+        <button id="restartButton" class="nav">Restart Quiz</button>
+      </div>
     </div>
+  </div>
 
-    <!-- RESULTS -->
-    <section id="results" class="hidden">
-        <div class="results-shell">
+</div>
+</div>
 
-            <!-- CAREERS -->
-            <section id="careersSection" class="results-section">
-                <h2 class="results-title m-0 fw-500 pb-1rem mw-50percent text-center fc-dark">
-                    <i>Careers you'd thrive in</i>
-                </h2>
-                <div id="careerGrid" class="career-grid"></div>
-                <button class="arrow-button" id="arrow1">↓</button>
-            </section>
-
-            <!-- COURSES -->
-            <section id="coursesSection" class="results-section align-center hidden">
-                <h2 class="results-title m-0 fw-500 pb-1rem p-1rem text-center fc-dark">
-                    <i>Courses that would help you develop <span id="path"></span> skills at Oregon State are</i>
-                </h2>
-                <ul id="courseList" class="course-list"></ul>
-                <button class="arrow-button" id="arrow2">↓</button>
-            </section>
-
-            <!-- WRAP UP -->
-            <section id="wrapupSection" class="results-section wrapup w-80percent m-auto pt-100px hidden">
-                <p>Agriculture and natural resources shape our communities, our economy, and our future. Strong communication connects people to the land, the science, and the stories behind it.</p>
-
-                <p>Agriculture and natural resources shape our communities, our environment, and our future. Communication connects people to the land, the science, and the stories behind it. Strong communication is how agriculture and natural resources grow trust, inspire action, and shape the future.</p>
-
-                <p>Wherever you see yourself making a difference, there's a place for your voice here. If you're ready to communicate, educate, advocate, or build something of your own, your place starts here with the Agricultural & Natural Resources Communication program at Oregon State University.</p>
-
-                <button id="restartButton" class="nav">
-                    Restart Quiz
-                </button>
-            </section>
-
-        </div>
-    </section>
+<!-- Kiosk idle screen -->
+<div id="kioskIdleOverlay">
+  <div class="idle-text">Tap to Start</div>
+  <div class="idle-subtext">Discover your career in Agriculture &amp; Natural Resources Communication</div>
+</div>
 
 <script>
-    /* =====================
-    STATE
-    ===================== */
-    let currentPath = null;
-    let currentIndex = 0;
-    const historyStack = [];
-    let selectedPathKey = null;
+let currentPath = null;
+let currentIndex = 0;
+const historyStack = [];
+let selectedPathKey = null;
+const answerLog = []; // tracks { question, answer } for each step
 
-    /* =====================
-    QUESTIONS
-    ===================== */
-    const Question1 = {
-    label: "When you’re working on a project, what part excites you most?",
-    options: [
-        { label: "Making it look visually appealing", key: "visual" },
-        { label: "Writing or crafting the message", key: "writing" },
-        { label: "Understanding people and audiences", key: "strategy" },
-        { label: "Planning, organizing, or leading the process", key: "management" },
-        { label: "Speaking up, persuading, or advocating", key: "advocacy" },
-        { label: "Teaching or helping others understand", key: "education" },
-        { label: "Building my own brand, business, or idea", key: "entrepreneurial" }
-    ]
-    };
+const Question1 = {
+  label: "When you're working on a project, what part excites you most?",
+  options: [
+    { label: "Making it look visually appealing", key: "visual" },
+    { label: "Writing or crafting the message", key: "writing" },
+    { label: "Understanding people and audiences", key: "strategy" },
+    { label: "Planning, organizing, or leading the process", key: "management" },
+    { label: "Speaking up, persuading, or advocating", key: "advocacy" },
+    { label: "Teaching or helping others understand", key: "education" },
+    { label: "Building my own brand, business, or idea", key: "entrepreneurial" }
+  ]
+};
 
-    const VisualPath = [
-    {
-        label: "How do you like to create?",
-        options: [
-        { label: "Graphic design, branding, layouts", key: "graphic_design" },
-        { label: "Social media visuals or short-form video", key: "social_video" },
-        { label: "Photography or videography", key: "photo_video" }
-        ]
-    },
-    {
-        label: "Where do you want your work to show up?",
-        options: [
-        { label: "Brands, logos, and campaigns", key: "brand_campaigns" },
-        { label: "Instagram, TikTok, or websites", key: "digital_platforms" },
-        { label: "Real people, places, and stories", key: "real_world_stories" }
-        ]
-    }
-    ];
+const VisualPath = [
+  { label: "How do you like to create?", options: [
+    { label: "Graphic design, branding, layouts", key: "graphic_design" },
+    { label: "Social media visuals or short-form video", key: "social_video" },
+    { label: "Photography or videography", key: "photo_video" }
+  ]},
+  { label: "Where do you want your work to show up?", options: [
+    { label: "Brands, logos, and campaigns", key: "brand_campaigns" },
+    { label: "Instagram, TikTok, or websites", key: "digital_platforms" },
+    { label: "Real people, places, and stories", key: "real_world_stories" }
+  ]}
+];
 
-    const WritingPath = [
-        {
-            label : "What kind of writing energizes you?",
-            options : [
-                { label : "Professional or media writing", key: "professional_writing" },
-                { label : "Creative or narrative writing", key: "creative_writing" },
-                { label : "Clear explanations of complex topics", key: "explanatory_writing" }
-            ]
-        },
-        {
-            label : "Who do you most want to reach?",
-            options : [
-                { label : "The public or media", key: "public_audience" },
-                { label : "Readers looking for stories", key: "story_readers" },
-                { label : "Communities needing clear information", key: "information_seekers" }
-            ]
-        }
-    ];
+const WritingPath = [
+  { label: "What kind of writing energizes you?", options: [
+    { label: "Professional or media writing", key: "professional_writing" },
+    { label: "Creative or narrative writing", key: "creative_writing" },
+    { label: "Clear explanations of complex topics", key: "explanatory_writing" }
+  ]},
+  { label: "Who do you most want to reach?", options: [
+    { label: "The public or media", key: "public_audience" },
+    { label: "Readers looking for stories", key: "story_readers" },
+    { label: "Communities needing clear information", key: "information_seekers" }
+  ]}
+];
 
-    const StrategyPath = [
-        {
-            label : "What part of communication interests you most?",
-            options : [
-                { label : "Understanding perspectives", key: "audience_perspectives" },
-                { label : "Researching opinions or trends", key: "research_analysis" },
-                { label : "Shaping messages for audiences", key: "message_strategy" }
-            ]
-        },
-        {
-            label : "How do you like to solve problems?",
-            options: [
-                { label : "Big-picture thinking", key: "big_picture" },
-                { label : "Data and insights", key: "data_insights" },
-                { label : "Messaging and positioning", key: "positioning_strategy" }
-            ]
-        }
-    ];
+const StrategyPath = [
+  { label: "What part of communication interests you most?", options: [
+    { label: "Understanding perspectives", key: "audience_perspectives" },
+    { label: "Researching opinions or trends", key: "research_analysis" },
+    { label: "Shaping messages for audiences", key: "message_strategy" }
+  ]},
+  { label: "How do you like to solve problems?", options: [
+    { label: "Big-picture thinking", key: "big_picture" },
+    { label: "Data and insights", key: "data_insights" },
+    { label: "Messaging and positioning", key: "positioning_strategy" }
+  ]}
+];
 
-    const ManagementPath = [
-        {
-            label : "What role do you naturally take in groups?",
-            options : [
-                { label : "Organizer", key: "organizer_role" },
-                { label : "Coordinator", key: "coordinator_role" },
-                { label : "Leader", key: "leader_role" }
-            ]
-        },
-        {
-            label : "What kind of responsibility do you enjoy?",
-            options : [
-                { label : "Events and programs", key: "events_programs" },
-                { label : "Details and logistics", key: "logistics_details" },
-                { label : "People and projects", key: "people_projects" }
-            ]
-        }
-    ];
+const ManagementPath = [
+  { label: "What role do you naturally take in groups?", options: [
+    { label: "Organizer", key: "organizer_role" },
+    { label: "Coordinator", key: "coordinator_role" },
+    { label: "Leader", key: "leader_role" }
+  ]},
+  { label: "What kind of responsibility do you enjoy?", options: [
+    { label: "Events and programs", key: "events_programs" },
+    { label: "Details and logistics", key: "logistics_details" },
+    { label: "People and projects", key: "people_projects" }
+  ]}
+];
 
-    const AdvocacyPath = [
-        {
-            label : "How do you like to use your voice?",
-            options : [
-                { label : "Speaking or presenting", key: "public_speaking" },
-                { label : "Online advocacy", key: "digital_advocacy" },
-                { label : "Leading in person through challenging situations", key: "in_person_leadership" }
-            ]
-        },
-        {
-            label : "What motivates you most?",
-            options : [
-                { label : "Making sure others are heard", key: "amplifying_voices" },
-                { label : "Creating change", key: "driving_change" },
-                { label : "Protecting people, land, or trust", key: "protection_stewardship" }
-            ]
-        }
-    ];
+const AdvocacyPath = [
+  { label: "How do you like to use your voice?", options: [
+    { label: "Speaking or presenting", key: "public_speaking" },
+    { label: "Online advocacy", key: "digital_advocacy" },
+    { label: "Leading in person through challenging situations", key: "in_person_leadership" }
+  ]},
+  { label: "What motivates you most?", options: [
+    { label: "Making sure others are heard", key: "amplifying_voices" },
+    { label: "Creating change", key: "driving_change" },
+    { label: "Protecting people, land, or trust", key: "protection_stewardship" }
+  ]}
+];
 
-    const EducationPath = [
-        {
-            label : "How do you like to teach others?",
-            options : [
-                { label : "Explaining concepts clearly", key: "clear_explanations" },
-                { label : "Hands-on demonstrations", key: "hands_on_learning" },
-                { label : "Storytelling and examples", key: "story_based_learning" }
-            ]
-        },
-        {
-            label : "Where do you want learning to happen?",
-            options : [
-                { label : "Community or outdoor spaces", key: "community_learning" },
-                { label : "Through signs, media, or exhibits", key: "interpretive_media" },
-                { label : "Small groups or one-on-one", key: "small_group_learning" }
-            ]
-        }
-    ];
+const EducationPath = [
+  { label: "How do you like to teach others?", options: [
+    { label: "Explaining concepts clearly", key: "clear_explanations" },
+    { label: "Hands-on demonstrations", key: "hands_on_learning" },
+    { label: "Storytelling and examples", key: "story_based_learning" }
+  ]},
+  { label: "Where do you want learning to happen?", options: [
+    { label: "Community or outdoor spaces", key: "community_learning" },
+    { label: "Through signs, media, or exhibits", key: "interpretive_media" },
+    { label: "Small groups or one-on-one", key: "small_group_learning" }
+  ]}
+];
 
-    const EntrepreneurialPath = [
-        {
-            label : "What excites you about building something?",
-            options : [
-                { label : "Marketing products I believe in", key: "product_marketing" },
-                { label : "Running my own projects", key: "independent_projects" },
-                { label : "Helping others grow", key: "supporting_growth" }
-            ]
-        },
-        {
-            label : "How do you want to work?",
-            options : [
-                { label : "On my own brand or operation", key: "own_brand" },
-                { label : "As a consultant or freelancer", key: "consulting_freelance" },
-                { label : "With small businesses or cooperatives", key: "small_business_support" }
-            ]
-        }
-    ];
+const EntrepreneurialPath = [
+  { label: "What excites you about building something?", options: [
+    { label: "Marketing products I believe in", key: "product_marketing" },
+    { label: "Running my own projects", key: "independent_projects" },
+    { label: "Helping others grow", key: "supporting_growth" }
+  ]},
+  { label: "How do you want to work?", options: [
+    { label: "On my own brand or operation", key: "own_brand" },
+    { label: "As a consultant or freelancer", key: "consulting_freelance" },
+    { label: "With small businesses or cooperatives", key: "small_business_support" }
+  ]}
+];
 
-    const paths = {
-    visual: VisualPath,
-    writing : WritingPath,
-    strategy : StrategyPath,
-    management : ManagementPath,
-    advocacy : AdvocacyPath,
-    education : EducationPath,
-    entrepreneurial: EntrepreneurialPath
-    };
-
-/* =====================
-   RESULTS
-===================== */
+const paths = {
+  visual: VisualPath, writing: WritingPath, strategy: StrategyPath,
+  management: ManagementPath, advocacy: AdvocacyPath,
+  education: EducationPath, entrepreneurial: EntrepreneurialPath
+};
 
 const resultsData = {
   visual: {
-    career: "visual communication",
-    careerGroup: "Visual Communications",
+    career: "visual communication", careerGroup: "Visual Communications",
     careers: [
-        {
-            title: "Graphic Designer",
-            image: "images/designer.jpg"
-        },
-        {
-            title: "Social Media Manager",
-            image: "images/social-media.jpg"
-        },
-        {
-            title: "Digital Content Creator",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Photographer or Videographer",
-            image: "images/photographer.jpg"
-        },
-        {
-            title: "Marketing or Branding Specialist",
-            image: "images/branding.jpg"
-        }
+      { title: "Graphic Designer", image: "images/designer.jpg" },
+      { title: "Social Media Manager", image: "images/social-media.jpg" },
+      { title: "Digital Content Creator", image: "images/digital-content.jpg" },
+      { title: "Photographer or Videographer", image: "images/photographer.jpg" },
+      { title: "Marketing or Branding Specialist", image: "images/branding.jpg" }
     ],
     courses: [
-        "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
-        "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
-        "Communication, Media, and Society Core education category",
-        "AGCM 300: Digital Media Production in ANRC",
-        "AGCM 445: Social media advocacy in Ag Sciences & Natural Resources",
-        "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
+      "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
+      "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
+      "Communication, Media, and Society Core education category",
+      "AGCM 300: Digital Media Production in ANRC",
+      "AGCM 445: Social media advocacy in Ag Sciences & Natural Resources",
+      "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
     ]
   },
-
   writing: {
-    career: "writing",
-    careerGroup: "Commuication Writing",
+    career: "writing", careerGroup: "Communication Writing",
     careers: [
-        {
-            title: "Commodity Communications Specialist",
-            image: "images/talking.jpg"
-        },
-        {
-            title: "Agricultural Journalist",
-            image: "images/journalist.jpg"
-        },
-        {
-            title: "Public Relations Coordinator",
-            image: "images/video-call.jpg"
-        },
-        {
-            title: "Freelance Writer",
-            image: "images/writer.jpg"
-        },
-        {
-            title: "Magazine Editor",
-            image: "images/marketing.jpg"
-        }
+      { title: "Commodity Communications Specialist", image: "images/talking.jpg" },
+      { title: "Agricultural Journalist", image: "images/journalist.jpg" },
+      { title: "Public Relations Coordinator", image: "images/video-call.jpg" },
+      { title: "Freelance Writer", image: "images/writer.jpg" },
+      { title: "Magazine Editor", image: "images/marketing.jpg" }
     ],
     courses: [
-        "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
-        "AGCM 364: Professional Development for Agriculture and Natural Resources Communication",
-        "AGCM 392: Agricultural & Natural Resources Communication Writing",
-        "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
+      "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
+      "AGCM 364: Professional Development for Agriculture and Natural Resources Communication",
+      "AGCM 392: Agricultural & Natural Resources Communication Writing",
+      "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
     ]
   },
-
   strategy: {
-    career: "communication strategy",
-    careerGroup: "Communication Strategy",
+    career: "communication strategy", careerGroup: "Communication Strategy",
     careers: [
-        {
-            title: "Communications Strategist",
-            image: "images/strategist.jpg"
-        },
-        {
-            title: "Audience Research Analyst",
-            image: "images/analyst.jpg"
-        },
-        {
-            title: "Public Affairs Communicator",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "Campaign Planner",
-            image: "images/planner.jpg"
-        },
-        {
-            title: "Marketing Coordinator",
-            image: "images/marketing.jpg"
-        }
+      { title: "Communications Strategist", image: "images/strategist.jpg" },
+      { title: "Audience Research Analyst", image: "images/analyst.jpg" },
+      { title: "Public Affairs Communicator", image: "images/public-affairs.jpg" },
+      { title: "Campaign Planner", image: "images/planner.jpg" },
+      { title: "Marketing Coordinator", image: "images/marketing.jpg" }
     ],
     courses: [
-        "AGCM 351: Communicating Global Agriculture & Natural Resources Issues",
-        "AGCM 390: Policy & Advocacy Communications in Agriculture & Natural Resources",
-        "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
-        "AGCM 364: Professional Development for Agriculture and Natural Resources Communication"
+      "AGCM 351: Communicating Global Agriculture & Natural Resources Issues",
+      "AGCM 390: Policy & Advocacy Communications in Agriculture & Natural Resources",
+      "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
+      "AGCM 364: Professional Development for Agriculture and Natural Resources Communication"
     ]
   },
-
   management: {
-    career: "management",
-    careerGroup: "Communication Management",
+    career: "management", careerGroup: "Communication Management",
     careers: [
-        {
-            title: "Event or Outreach Coordinator",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Project Manager",
-            image: "images/video-call.jpg"
-        },
-        {
-            title: "Communications Lead",
-            image: "images/branding.jpg"
-        },
-        {
-            title: "Extension Program Director",
-            image: "images/hangout.jpg"
-        },
-        {
-            title: "Nonprofit Administrator",
-            image: "images/marketing.jpg"
-        }
+      { title: "Event or Outreach Coordinator", image: "images/clipboard.jpg" },
+      { title: "Project Manager", image: "images/video-call.jpg" },
+      { title: "Communications Lead", image: "images/branding.jpg" },
+      { title: "Extension Program Director", image: "images/hangout.jpg" },
+      { title: "Nonprofit Administrator", image: "images/marketing.jpg" }
     ],
     courses: [
-        "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
-        "AGCM 364: Professional Development for agriculture and natural resources communication",
-        "AGCM 455: Risk & Crisis Communications in Ag Sci & Natural Resources"
+      "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
+      "AGCM 364: Professional Development for agriculture and natural resources communication",
+      "AGCM 455: Risk & Crisis Communications in Ag Sci & Natural Resources"
     ]
   },
-
   advocacy: {
-    career: "advocacy",
-    careerGroup: "Communication Advocacy",
+    career: "advocacy", careerGroup: "Communication Advocacy",
     careers: [
-        {
-            title: "Advocacy or Outreach Specialist",
-            image: "images/walkie-talkie.jpg"
-        },
-        {
-            title: "Policy or Government Communicator",
-            image: "images/business.jpg"
-        },
-        {
-            title: "Industry Spokesperson",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "AG/NR Lobbyist",
-            image: "images/energy.jpg"
-        },
-        {
-            title: "Crisis & Risk Communication Professional",
-            image: "images/people-meeting.jpg"
-        },
-        {
-            title: "Social Media Advocate",
-            image: "images/social-media.jpg"
-        }
+      { title: "Advocacy or Outreach Specialist", image: "images/walkie-talkie.jpg" },
+      { title: "Policy or Government Communicator", image: "images/business.jpg" },
+      { title: "Industry Spokesperson", image: "images/public-affairs.jpg" },
+      { title: "AG/NR Lobbyist", image: "images/energy.jpg" },
+      { title: "Crisis & Risk Communication Professional", image: "images/people-meeting.jpg" },
+      { title: "Social Media Advocate", image: "images/social-media.jpg" }
     ],
     courses: [
-        "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
-        "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
-        "AGCM 364: Professional Development for agriculture and natural resources communication",
-        "AGCM 390: Policy & Advocacy Communications in Agriculture & Natural Resources",
-        "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
-        "AGCM 445: Social media advocacy in Agri Sciences & Natural Resources"
+      "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
+      "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
+      "AGCM 364: Professional Development for agriculture and natural resources communication",
+      "AGCM 390: Policy & Advocacy Communications in Agriculture & Natural Resources",
+      "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
+      "AGCM 445: Social media advocacy in Agri Sciences & Natural Resources"
     ]
   },
-
   education: {
-    career: "education",
-    careerGroup: "Communication Education",
+    career: "education", careerGroup: "Communication Education",
     careers: [
-        {
-            title: "Natural Resources Public Information Officer",
-            image: "images/seminar.jpg"
-        },
-        {
-            title: "Extension Educator",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Outreach & Education Coordinator",
-            image: "images/talking.jpg"
-        },
-        {
-            title: "Environmental or Conservation Educator",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Interpretive Specialist (parks, forests, wildlife)",
-            image: "images/walkie-talkie.jpg"
-        },
-        {
-            title: "Museum or Visitor Center Communicator",
-            image: "images/public-affairs.jpg"
-        },
-        {
-            title: "Agricultural Literacy Specialist",
-            image: "images/writer.jpg"
-        },
-        {
-            title: "AG/NR Curriculum Developer",
-            image: "images/idea.jpg"
-        },
-        {
-            title: "AG/NR Teacher",
-            image: "images/teaching.jpg"
-        }
+      { title: "Natural Resources Public Information Officer", image: "images/seminar.jpg" },
+      { title: "Extension Educator", image: "images/digital-content.jpg" },
+      { title: "Outreach & Education Coordinator", image: "images/talking.jpg" },
+      { title: "Environmental or Conservation Educator", image: "images/clipboard.jpg" },
+      { title: "Interpretive Specialist (parks, forests, wildlife)", image: "images/walkie-talkie.jpg" },
+      { title: "Museum or Visitor Center Communicator", image: "images/public-affairs.jpg" },
+      { title: "Agricultural Literacy Specialist", image: "images/writer.jpg" },
+      { title: "AG/NR Curriculum Developer", image: "images/idea.jpg" },
+      { title: "AG/NR Teacher", image: "images/teaching.jpg" }
     ],
     courses: [
-        "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
-        "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
-        "AGCM 351: Communicating Global Agriculture & Natural Resources Issues",
-        "AGCM 364: Professional Development for agriculture and natural resources communication",
-        "AGCM 444: Communication Strategies for Agriculture and Natural Resources"
+      "AGCM 210: Exploring Social Science in Oregon Agriculture & Natural Resources",
+      "AGCM 250: Advancement & Consumption of Agricultural & Natural Resources Media",
+      "AGCM 351: Communicating Global Agriculture & Natural Resources Issues",
+      "AGCM 364: Professional Development for agriculture and natural resources communication",
+      "AGCM 444: Communication Strategies for Agriculture and Natural Resources"
     ]
   },
-
   entrepreneurial: {
-    career: "entrepreneurial",
-    careerGroup: "Entrepreneurial Communication",
+    career: "entrepreneurial", careerGroup: "Entrepreneurial Communication",
     careers: [
-        {
-            title: "Agricultural Communications Consultant",
-            image: "images/clipboard.jpg"
-        },
-        {
-            title: "Producer-Marketer (Direct-to-Consumer Beef, Crops, etc.)",
-            image: "images/people-meeting.jpg"
-        },
-        {
-            title: "Ag Business Brand Builder",
-            image: "images/specialist.jpg"
-        },
-        {
-            title: "Freelance Content Creator (Ag & NR)",
-            image: "images/digital-content.jpg"
-        },
-        {
-            title: "Cooperative or Small Business Communications Lead",
-            image: "images/talking.jpg"
-        }
+      { title: "Agricultural Communications Consultant", image: "images/clipboard.jpg" },
+      { title: "Producer-Marketer (Direct-to-Consumer Beef, Crops, etc.)", image: "images/people-meeting.jpg" },
+      { title: "Ag Business Brand Builder", image: "images/specialist.jpg" },
+      { title: "Freelance Content Creator (Ag & NR)", image: "images/digital-content.jpg" },
+      { title: "Cooperative or Small Business Communications Lead", image: "images/talking.jpg" }
     ],
     courses: [
-        "AGCM 364: Professional Development for agriculture and natural resources communication",
-        "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
-        "AGCM 445: Social media advocacy in Agri Sciences & Natural Resources",
-        "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
+      "AGCM 364: Professional Development for agriculture and natural resources communication",
+      "AGCM 444: Communication Strategies for Agriculture and Natural Resources",
+      "AGCM 445: Social media advocacy in Agri Sciences & Natural Resources",
+      "AGCM 466: Packing it All in: Magazine Design for Agriculture & Natural Resources Communication"
     ]
   }
 };
 
-/* =====================
-   RENDER
-===================== */
 function renderQuestion(question, layoutType) {
   const label = document.getElementById("questionLabel");
   const container = document.getElementById("radioContainer");
@@ -1222,27 +1004,26 @@ function renderQuestion(question, layoutType) {
     btn.type = "button";
     btn.className = "answer";
     btn.textContent = opt.label;
-    btn.onclick = () => handleAnswer(opt.key);
+    btn.onclick = () => handleAnswer(opt.key, opt.label);
     container.appendChild(btn);
   });
 }
 
-/* =====================
-   FLOW
-===================== */
-function handleAnswer(key) {
-  historyStack.push({ currentPath, currentIndex });
+function handleAnswer(key, label) {
+  historyStack.push({ currentPath, currentIndex, answerLogLength: answerLog.length });
 
-    if (!currentPath) {
-    selectedPathKey = key;             
+  if (!currentPath) {
+    answerLog.push(label);
+    selectedPathKey = key;
     currentPath = paths[key];
     currentIndex = 0;
-
     document.getElementById("backButton").classList.remove("hidden");
+    document.querySelector(".quiz-shell").classList.add("min-h-50vh");
     renderQuestion(currentPath[currentIndex], "path");
     return;
-    }
+  }
 
+  answerLog.push(label);
   currentIndex++;
 
   if (currentIndex < currentPath.length) {
@@ -1252,61 +1033,57 @@ function handleAnswer(key) {
   }
 }
 
-/* =====================
-   BACK
-===================== */
 document.getElementById("backButton").onclick = () => {
   const prev = historyStack.pop();
   if (!prev) return;
 
   currentPath = prev.currentPath;
   currentIndex = prev.currentIndex;
+  answerLog.length = prev.answerLogLength;
 
   if (!currentPath) {
     document.getElementById("backButton").classList.add("hidden");
+    document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
     renderQuestion(Question1, "intro");
   } else {
     renderQuestion(currentPath[currentIndex], "path");
   }
 };
 
-/* INIT */
 renderQuestion(Question1, "intro");
 
-/* =====================
-   RESULTS
-===================== */
 function showResults(pathKey) {
   const data = resultsData[pathKey];
   if (!data) return;
-    document.getElementById("path-title").textContent = data.careerGroup;
-    document.getElementById("path").textContent = data.career;
-    document.getElementById("subtitle").classList.remove("hidden");
+
+  // Save response to database (Electron only)
+  if (window.quizAPI && window.quizAPI.saveResponse) {
+    window.quizAPI.saveResponse({
+      question1: answerLog[0] || '',
+      question2: answerLog[1] || '',
+      question3: answerLog[2] || '',
+      path: data.careerGroup
+    });
+  }
+
+  document.getElementById("path-title").textContent = data.careerGroup;
+  document.getElementById("path").textContent = data.career;
+  document.getElementById("subtitle").classList.remove("hidden");
+
   const careerGrid = document.getElementById("careerGrid");
   const courseList = document.getElementById("courseList");
-
   careerGrid.innerHTML = "";
   courseList.innerHTML = "";
 
-  // Add layout class based on number of careers
   const careerCount = data.careers.length;
-  if (careerCount <= 5) {
-    careerGrid.classList.add('grid-small');
-    careerGrid.classList.remove('grid-med');
-    careerGrid.classList.remove('grid-large');
-  } else if (careerCount == 6) {
-    careerGrid.classList.add('grid-med');
-    careerGrid.classList.remove('grid-small');
-    careerGrid.classList.remove('grid-large');
-  } else {
-    careerGrid.classList.add('grid-large');
-    careerGrid.classList.remove('grid-small');
-    careerGrid.classList.remove('grid-med');
-  }
+  careerGrid.classList.remove('grid-small', 'grid-med', 'grid-large');
+  if (careerCount <= 5)      careerGrid.classList.add('grid-small');
+  else if (careerCount === 6) careerGrid.classList.add('grid-med');
+  else                        careerGrid.classList.add('grid-large');
 
   const overlays = [];
 
-  data.careers.forEach((career, index) => {
+  data.careers.forEach(career => {
     const card = document.createElement("div");
     card.className = "career-card";
     card.style.setProperty("--bg", `url('${career.image}')`);
@@ -1317,33 +1094,21 @@ function showResults(pathKey) {
 
     card.appendChild(overlay);
     careerGrid.appendChild(card);
-    
     overlays.push(overlay);
   });
 
-  // Sequential overlay hiding/showing
-  let currentIndex = 0;
-  
+  // Cycle overlays: briefly hide one at a time so images peek through
+  let cycleIdx = 0;
   function cycleOverlays() {
-    const overlay = overlays[currentIndex];
-    
-    // Hide current overlay
+    const overlay = overlays[cycleIdx];
     overlay.classList.add("hidden");
-    
-    // Show it again after 2-3 seconds
     setTimeout(() => {
       overlay.classList.remove("hidden");
-      
-      // Move to next card after showing again
-      currentIndex = (currentIndex + 1) % overlays.length;
-      
-      // Wait a bit before next card hides (1-2 seconds)
-      setTimeout(cycleOverlays, 500 + Math.random() * 500);
-    }, 1000 + Math.random() * 500);
+      cycleIdx = (cycleIdx + 1) % overlays.length;
+      setTimeout(cycleOverlays, 600 + Math.random() * 600);
+    }, 1200 + Math.random() * 600);
   }
-  
-  // Start the cycle after initial delay
-  setTimeout(cycleOverlays, 500);
+  setTimeout(cycleOverlays, 800);
 
   data.courses.forEach(course => {
     const li = document.createElement("li");
@@ -1353,59 +1118,126 @@ function showResults(pathKey) {
 
   document.querySelector(".quiz-shell").classList.add("hidden");
   document.getElementById("results").classList.remove("hidden");
-  
-  // Set up arrow navigation - MUST BE AFTER results are shown
+
   document.getElementById("arrow1").onclick = () => {
     document.getElementById("careersSection").classList.add("hidden");
     document.getElementById("coursesSection").classList.remove("hidden");
   };
 
-  document.getElementById("arrow2").onclick = () => {
-    document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.remove("hidden");
-  };
+  document.getElementById("arrow2").onclick = openModal;
 }
+
+function openModal() {
+  document.getElementById("wrapupModal").classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeModal() {
+  document.getElementById("wrapupModal").classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("closeModal").onclick = closeModal;
+document.getElementById("wrapupModal").onclick = e => {
+  if (e.target.id === "wrapupModal") closeModal();
+};
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+function restartQuiz() {
+  closeModal();
+  currentPath = null;
+  currentIndex = 0;
+  historyStack.length = 0;
+  selectedPathKey = null;
+  answerLog.length = 0;
+
+  document.getElementById("results").classList.add("hidden");
+  document.querySelector(".quiz-shell").classList.remove("hidden");
+  document.getElementById("backButton").classList.add("hidden");
+  document.getElementById("subtitle").classList.add("hidden");
+  document.getElementById("careersSection").classList.remove("hidden");
+  document.getElementById("coursesSection").classList.add("hidden");
+  document.querySelector(".quiz-shell").classList.remove("min-h-50vh");
+
+  renderQuestion(Question1, "intro");
+}
+
+document.getElementById("restartButton").onclick = restartQuiz;
 
 /* =====================
-   RESTART
+   KIOSK MODE
 ===================== */
-document.getElementById("restartButton").onclick = () => {
-    currentPath = null;
-    currentIndex = 0;
-    historyStack.length = 0;
+(function initKiosk() {
+  const IDLE_TIMEOUT = 90000; // 90 seconds of inactivity
+  const isElectron = navigator.userAgent.toLowerCase().includes('electron');
 
-    document.getElementById("results").classList.add("hidden");
-    document.querySelector(".quiz-shell").classList.remove("hidden");
+  // Only apply kiosk layout overrides inside Electron
+  if (isElectron) {
+    document.documentElement.classList.add('kiosk-mode');
+  }
 
-    document.getElementById("backButton").classList.add("hidden");
-    renderQuestion(Question1, "intro");
-    selectedPathKey = null;
-    
-    // Reset sections
-    document.getElementById("subtitle").classList.add("hidden");
-    document.getElementById("careersSection").classList.remove("hidden");
-    document.getElementById("coursesSection").classList.add("hidden");
-    document.getElementById("wrapupSection").classList.add("hidden");
-};
+  // Prevent pinch-to-zoom and double-tap zoom
+  document.addEventListener('touchmove', e => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
 
+  // Disable context menu (long-press)
+  document.addEventListener('contextmenu', e => e.preventDefault());
 
-/*
+  // --- Inactivity auto-reset ---
+  const idleOverlay = document.getElementById('kioskIdleOverlay');
+  let idleTimer = null;
 
-const dataToSend = {
-  question1: "",
-  question2: "",
-  question3: "",
-  path: ""
-}
+  function resetIdleTimer() {
+    clearTimeout(idleTimer);
+    if (idleOverlay.classList.contains('active')) {
+      idleOverlay.classList.remove('active');
+    }
+    idleTimer = setTimeout(onIdle, IDLE_TIMEOUT);
+  }
 
-if (window.chrome && window.chrome.webview){
-  window.chrome.webview.postMessage(dataToSend);
-}
+  function onIdle() {
+    // Only show idle screen if not on the first question
+    if (currentPath !== null || document.getElementById("wrapupModal").classList.contains("active")) {
+      restartQuiz();
+      idleOverlay.classList.add('active');
+    }
+  }
 
-*/
+  // Tap idle overlay to dismiss and start fresh
+  idleOverlay.addEventListener('click', () => {
+    idleOverlay.classList.remove('active');
+    resetIdleTimer();
+  });
 
+  // Track all user interactions to reset idle timer
+  ['touchstart', 'click', 'scroll', 'keydown'].forEach(evt => {
+    document.addEventListener(evt, resetIdleTimer, { passive: true });
+  });
 
+  // Start idle timer
+  resetIdleTimer();
+
+  // --- Wake Lock (prevent screen dimming) ---
+  async function requestWakeLock() {
+    if ('wakeLock' in navigator) {
+      try {
+        await navigator.wakeLock.request('screen');
+      } catch (_) {
+        // Wake lock request failed (e.g., low battery)
+      }
+    }
+  }
+  requestWakeLock();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') requestWakeLock();
+  });
+
+  // --- Service Worker registration (browser only, not needed in Electron) ---
+  if (!isElectron && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+})();
 </script>
-
 </body>
 </html>
