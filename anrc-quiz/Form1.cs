@@ -9,6 +9,7 @@ namespace anrc_quiz{
     {
         private string dbPath;
         private string csvPath;
+        private long _lastResponseId = -1;
 
         public Form1()
         {
@@ -63,7 +64,7 @@ namespace anrc_quiz{
         }
 
         /* ================================
-           WEBVIEW2 INITIALIZATION (FIXED)
+           WEBVIEW2 INITIALIZATION
         =================================*/
         private async void InitializeAsync()
         {
@@ -81,6 +82,28 @@ namespace anrc_quiz{
 
             await webView21.EnsureCoreWebView2Async(env);
 
+            // Inject quizAPI bridge so JS can call window.quizAPI.saveResponse / saveContact
+            await webView21.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(@"
+                window.quizAPI = {
+                    saveResponse: function(data) {
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            command: 'saveResponse',
+                            question1: data.question1 || '',
+                            question2: data.question2 || '',
+                            question3: data.question3 || '',
+                            path: data.path || ''
+                        }));
+                    },
+                    saveContact: function(data) {
+                        window.chrome.webview.postMessage(JSON.stringify({
+                            command: 'saveContact',
+                            name: data.name || '',
+                            email: data.email || ''
+                        }));
+                    }
+                };
+            ");
+
             string rootPath = Path.Combine(Application.StartupPath, "wwwroot");
 
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping(
@@ -95,21 +118,20 @@ namespace anrc_quiz{
         }
 
         /* ================================
-           FIXED MESSAGE HANDLING
+           MESSAGE HANDLING
         =================================*/
         private void CoreWebView2_WebMessageReceived(object sender, CoreWebView2WebMessageReceivedEventArgs e)
         {
             string raw = e.WebMessageAsJson;
 
-            // Try to unwrap if WebView2 escaped it
-            string wrapped = raw;
+            // Unwrap if WebView2 double-encoded it as a JSON string
+            string json = raw;
             if (raw.StartsWith("\""))
             {
-                try { wrapped = JsonSerializer.Deserialize<string>(raw); }
-                catch { }
+                try { json = JsonSerializer.Deserialize<string>(raw) ?? raw; } catch { }
             }
-            
-            if (wrapped.Contains("\"command\":\"exit\""))
+
+            if (json.Contains("\"command\":\"exit\""))
             {
                 this.Close();
                 return;
@@ -117,25 +139,29 @@ namespace anrc_quiz{
 
             try
             {
-                SurveyResult data = null;
+                using var doc = JsonDocument.Parse(json);
+                var root = doc.RootElement;
 
-                if (raw.StartsWith("{"))
+                if (!root.TryGetProperty("command", out var commandProp))
                 {
-                    data = JsonSerializer.Deserialize<SurveyResult>(raw);
-                }
-                else if (raw.StartsWith("\""))
-                {
-                    string unwrapped = JsonSerializer.Deserialize<string>(raw);
-                    data = JsonSerializer.Deserialize<SurveyResult>(unwrapped);
+                    // Legacy format without command field — treat as saveResponse
+                    var data = JsonSerializer.Deserialize<SurveyResult>(json);
+                    if (data != null) _lastResponseId = SaveToDatabase(data);
+                    return;
                 }
 
-                if (data != null)
+                string command = commandProp.GetString() ?? "";
+
+                if (command == "saveResponse")
                 {
-                    SaveToDatabase(data);
+                    var data = JsonSerializer.Deserialize<SurveyResult>(json);
+                    if (data != null) _lastResponseId = SaveToDatabase(data);
                 }
-                else
+                else if (command == "saveContact")
                 {
-                    MessageBox.Show("WebView2 sent an invalid message:\n" + raw);
+                    string name  = root.TryGetProperty("name",  out var n)  ? n.GetString()  ?? "" : "";
+                    string email = root.TryGetProperty("email", out var em) ? em.GetString() ?? "" : "";
+                    UpdateContactInfo(name, email);
                 }
             }
             catch (Exception ex)
@@ -147,7 +173,7 @@ namespace anrc_quiz{
         /* ================================
            SAVE TO DATABASE
         =================================*/
-        private void SaveToDatabase(SurveyResult r)
+        private long SaveToDatabase(SurveyResult r)
         {
             using var conn = new SqliteConnection($"Data Source={dbPath}");
             conn.Open();
@@ -159,27 +185,56 @@ namespace anrc_quiz{
             ";
 
             cmd.Parameters.AddWithValue("$ts", DateTime.Now.ToString("o"));
-            cmd.Parameters.AddWithValue("$n", r.name ?? "");
-            cmd.Parameters.AddWithValue("$q1", r.question1 ?? "");
-            cmd.Parameters.AddWithValue("$q2", r.question2 ?? "");
-            cmd.Parameters.AddWithValue("$q3", r.question3 ?? "");
-            cmd.Parameters.AddWithValue("$p", r.path ?? "");
-            cmd.Parameters.AddWithValue("$e", r.email ?? "");
-
+            cmd.Parameters.AddWithValue("$n",  r.Name      ?? "");
+            cmd.Parameters.AddWithValue("$q1", r.Question1 ?? "");
+            cmd.Parameters.AddWithValue("$q2", r.Question2 ?? "");
+            cmd.Parameters.AddWithValue("$q3", r.Question3 ?? "");
+            cmd.Parameters.AddWithValue("$p",  r.Path      ?? "");
+            cmd.Parameters.AddWithValue("$e",  r.Email     ?? "");
 
             cmd.ExecuteNonQuery();
 
+            using var idCmd = conn.CreateCommand();
+            idCmd.CommandText = "SELECT last_insert_rowid()";
+            long id = (long)(idCmd.ExecuteScalar() ?? 0L);
+
             AppendCsvRow(r);
+            return id;
+        }
+
+        /* ================================
+           UPDATE CONTACT INFO
+        =================================*/
+        private void UpdateContactInfo(string name, string email)
+        {
+            if (_lastResponseId < 0) return;
+
+            using var conn = new SqliteConnection($"Data Source={dbPath}");
+            conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "UPDATE responses SET name = $name, email = $email WHERE id = $id";
+            cmd.Parameters.AddWithValue("$name",  name  ?? "");
+            cmd.Parameters.AddWithValue("$email", email ?? "");
+            cmd.Parameters.AddWithValue("$id",    _lastResponseId);
+
+            cmd.ExecuteNonQuery();
         }
 
         public class SurveyResult
         {
-            public string name { get; set; }
-            public string question1 { get; set; }
-            public string question2 { get; set; }
-            public string question3 { get; set; }
-            public string path { get; set; }
-            public string email { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("name")]
+            public string? Name { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("question1")]
+            public string? Question1 { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("question2")]
+            public string? Question2 { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("question3")]
+            public string? Question3 { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("path")]
+            public string? Path { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("email")]
+            public string? Email { get; set; }
         }
 
         /* ================================
@@ -193,7 +248,7 @@ namespace anrc_quiz{
             conn.Open();
 
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT name, question1, question2, question3, path, email FROM responses";
+            cmd.CommandText = "SELECT timestamp, name, question1, question2, question3, path, email FROM responses";
 
             using (var sw = new StreamWriter(tempPath, false))
             {
@@ -219,6 +274,7 @@ namespace anrc_quiz{
 
             File.Move(tempPath, csvPath);
         }
+
         private void AppendCsvRow(SurveyResult r)
         {
             bool fileExists = File.Exists(csvPath);
@@ -234,24 +290,19 @@ namespace anrc_quiz{
                 string timestamp = DateTime.Now.ToString("o");
                 string row = string.Join(",",
                     Escape(timestamp),
-                    Escape(r.name),
-                    Escape(r.question1),
-                    Escape(r.question2),
-                    Escape(r.question3),
-                    Escape(r.path),
-                    Escape(r.email)
+                    Escape(r.Name),
+                    Escape(r.Question1),
+                    Escape(r.Question2),
+                    Escape(r.Question3),
+                    Escape(r.Path),
+                    Escape(r.Email)
                 );
 
                 sw.WriteLine(row);
             }
         }
-        private string Flatten(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return "";
-            return value.Replace("[", "").Replace("]", "").Replace("\"", "");
-        }
 
-        private string Escape(string s)
+        private string Escape(string? s)
         {
             if (string.IsNullOrEmpty(s))
                 return "\"\"";
