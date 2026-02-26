@@ -198,7 +198,9 @@ namespace anrc_quiz{
             idCmd.CommandText = "SELECT last_insert_rowid()";
             long id = (long)(idCmd.ExecuteScalar() ?? 0L);
 
-            AppendCsvRow(r);
+            // CSV write is best-effort — must not prevent id from being returned
+            try { AppendCsvRow(r); } catch { }
+
             return id;
         }
 
@@ -219,6 +221,9 @@ namespace anrc_quiz{
             cmd.Parameters.AddWithValue("$id",    _lastResponseId);
 
             cmd.ExecuteNonQuery();
+
+            // Regenerate the CSV so it reflects the updated name/email
+            try { ExportToCsv(); } catch { }
         }
 
         public class SurveyResult
